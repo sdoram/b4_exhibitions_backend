@@ -23,3 +23,22 @@ class Accompany(models.Model):
 
     def __str__(self):
         return str(self.content)
+
+
+class Apply(models.Model):
+    user = models.ManyToManyField(
+        User,
+        related_name="get_applies",
+        verbose_name="동행신청하기 작성자",
+    )
+    accompany = models.ManyToManyField(
+        Accompany,
+        related_name="applies",
+        verbose_name="동행구하기 댓글",
+    )
+    content = models.TextField("동행신청하기 내용")
+    created_at = models.DateTimeField("생성시간", auto_now_add=True)
+    updated_at = models.DateTimeField("수정시간", auto_now=True)
+
+    def __str__(self):
+        return str(self.content)
