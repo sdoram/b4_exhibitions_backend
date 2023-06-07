@@ -14,6 +14,9 @@ class ExhibitionSerializer(serializers.ModelSerializer):
             "image",
             "created_at",
             "updated_at",
+            "category",
+            "start_time",
+            "end_time",
         ]
 
     def get_likes(self, obj):
