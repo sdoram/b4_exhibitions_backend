@@ -32,3 +32,11 @@ class ExhibitionDetailView(APIView):
         exhibition = self.get_object(exhibition_id)
         serializer = ExhibitionSerializer(exhibition)
         return Response(serializer.data)
+
+    def put(self, request, exhibition_id):
+        exhibition = self.get_object(exhibition_id)
+        serializer = ExhibitionSerializer(exhibition, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "게시글이 수정되었습니다."}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
