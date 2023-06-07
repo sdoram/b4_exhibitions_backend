@@ -22,14 +22,8 @@ class ExhibitionView(APIView):
 
 
 class ExhibitionDetailView(APIView):
-    def get_object(self, exhibition_id):  # 객체가 없을때 404
-        try:
-            return Exhibition.objects.get(id=exhibition_id)
-        except Exhibition.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
     def get(self, request, exhibition_id):
-        exhibition = self.get_object(exhibition_id)
+        exhibition = get_object_or_404(Exhibition, id=exhibition_id)
         serializer = ExhibitionSerializer(exhibition)
         return Response(serializer.data)
 
