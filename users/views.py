@@ -1,8 +1,10 @@
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework import permissions
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
 
-from users.serializers import UserSerializer
+from users.serializers import CustomTokenObtainPairSerializer, UserSerializer
 
 
 class UserView(APIView):
@@ -16,3 +18,7 @@ class UserView(APIView):
         else:
             print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):  # 토큰 부여하는 코드 = 로그인
+    serializer_class = CustomTokenObtainPairSerializer
