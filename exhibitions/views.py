@@ -45,3 +45,14 @@ class ExhibitionDetailView(APIView):
         exhibition = self.get_object(exhibition_id)
         exhibition.delete()
         return Response({"message": "게시글이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+
+
+class ExhibitionLikeView(APIView):  # 좋아요 기능
+    def post(self, request, exhibition_id):
+        exhibition = get_object_or_404(Exhibition, id=exhibition_id)
+        if request.user not in exhibition.likes.all():
+            exhibition.likes.add(request.user)
+            return Response({"message": "좋아요"}, status=status.HTTP_201_CREATED)
+        else:
+            exhibition.likes.remove(request.user)
+            return Response({"message": "좋아요 취소"}, status=status.HTTP_204_NO_CONTENT)
