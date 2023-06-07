@@ -67,6 +67,7 @@ class User(AbstractBaseUser):
         error_messages="필수 입력 값입니다.",
         verbose_name="성별",
     )
+    age = models.PositiveIntegerField(verbose_name="사용자 나이")
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="아이디 생성일")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="마지막 회원정보 수정일")
