@@ -141,6 +141,9 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.vscode
+**/migrations/**.py
+!**/migrations/__init__.py
 
 # Spyder project settings
 .spyderproject
