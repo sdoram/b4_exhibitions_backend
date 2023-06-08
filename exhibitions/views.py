@@ -39,7 +39,7 @@ class ExhibitionDetailView(APIView):
         return Response(serializer.data)
 
     def put(self, request, exhibition_id):
-        exhibition = self.get_object(exhibition_id)
+        exhibition = get_object_or_404(Exhibition, id=exhibition_id)
         serializer = ExhibitionSerializer(exhibition, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -47,7 +47,7 @@ class ExhibitionDetailView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, exhibition_id):
-        exhibition = self.get_object(exhibition_id)
+        exhibition = get_object_or_404(Exhibition, id=exhibition_id)
         exhibition.delete()
         return Response({"message": "게시글이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
 
