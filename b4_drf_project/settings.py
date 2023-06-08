@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     "exhibitions",
     "users",
     "reviews",
-    "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework",
 ]
 
 REST_FRAMEWORK = {
@@ -148,7 +148,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": False,
-    "UPDATE_LAST_LOGIN": False,
+    "UPDATE_LAST_LOGIN": True,
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
     "VERIFYING_KEY": "",
@@ -177,4 +177,5 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
-# AUTH_USER_MODEL =
+# 커스텀 유저 모델을 사용하기 위해 auth를 users.User로 바꾸었다.
+AUTH_USER_MODEL = "users.User"

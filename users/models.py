@@ -77,7 +77,7 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    username_FIELD = "email"  # 이걸로 로그인 하겠다 하는 필드. 들어가는 값은 unique=True 속성.
+    USERNAME_FIELD = "email"  # 이걸로 로그인 하겠다 하는 필드. 들어가는 값은 unique=True 속성.
     REQUIRED_FIELDS = ["nickname"]  # createsuperuser할때 어떤 필드들을 작성받을 지 적는 필드.
 
     def __str__(self):
