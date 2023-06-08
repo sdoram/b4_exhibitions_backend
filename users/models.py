@@ -3,28 +3,19 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, nickname, profile_image, gender, age, password=None):
+    def create_user(self, email, nickname, password=None):
         """
-        요청 받은 이메일, 회원닉네임, 프로필이미지, 성별, 나이, 비밀번호로 유저를 생성하여 저장합니다.
+        요청 받은 사용자 이메일, 사용자 닉네임, 비밀번호로 사용자를 생성하여 저장합니다.
         """
         if not email:
-            raise ValueError("유저 이메일은 필수입력 사항입니다.")
+            raise ValueError("사용자 이메일은 필수입력 사항입니다.")
 
         if not nickname:
-            raise ValueError("유저 닉네임은 필수입력 사항입니다.")
-
-        if not gender:
-            raise ValueError("유저 성별은 필수입력 사항입니다.")
-
-        if not age:
-            raise ValueError("유저 나이는 필수입력 사항입니다.")
+            raise ValueError("사용자 닉네임은 필수입력 사항입니다.")
 
         user = self.model(
             email=self.normalize_email(email),
             nickname=nickname,
-            profile_image=profile_image,
-            gender=gender,
-            age=age,
         )
 
         user.set_password(password)
@@ -33,7 +24,7 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, nickname, password=None):
         """
-        요청받은 이메일, 회원아이디, 비밀번호로 수퍼유저를 생성하여 저장합니다.
+        요청받은 사용자 이메일, 사용자 닉네임, 비밀번호로 수퍼유저를 생성하여 저장합니다.
         """
         user = self.create_user(
             email=email,
@@ -67,9 +58,8 @@ class User(AbstractBaseUser):
         error_messages="필수 입력 값입니다.",
         verbose_name="성별",
     )
-    age = models.PositiveIntegerField(verbose_name="사용자 나이")
-
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="아이디 생성일")
+    age = models.PositiveIntegerField(null=True, verbose_name="사용자 나이")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="사용자 계정 생성일")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="마지막 회원정보 수정일")
 
     is_active = models.BooleanField(default=True)
