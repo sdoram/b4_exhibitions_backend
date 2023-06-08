@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from accompanies.models import Accompany
+from accompanies.models import Accompany, Apply
+
+
+class ApplyCreateSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Apply
+        fields = ("content",)
 
 
 class AccompanyCreateSerializers(serializers.ModelSerializer):

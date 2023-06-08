@@ -4,7 +4,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from accompanies.models import Accompany
-from accompanies.serializers import AccompanyCreateSerializers, AccompanySerializers
+from accompanies.serializers import (
+    AccompanyCreateSerializers,
+    AccompanySerializers,
+    ApplyCreateSerializers,
+)
 from exhibitions.models import Exhibition
 
 
@@ -104,3 +108,30 @@ class AccompanyView(APIView):
             )
         else:
             return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+
+
+class ApplyView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def post(self, request, accompany_id):
+        """동행 신청하기 댓글 작성하기\n
+        Args:
+            request.data["content"] (char): 동행 신청하기 내용\n
+            accompany_id (int): 해당 댓글이 등록될 동행 구하기 댓글의 pk값\n
+        Returns:
+            HTTP_201_CREATED : 댓글 등록 완료\n
+            HTTP_400_BAD_REQUEST : 값이 제대로 입력되지 않음\n
+            HTTP_401_UNAUTHORIZED : 로그인 하지 않은 사용자
+        """
+        serializer = ApplyCreateSerializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user, accompany_id=accompany_id)
+            return Response(
+                {"message": "동행 신청하기 댓글이 등록되었습니다.", "data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
+        else:
+            return Response(
+                {"message": "요청이 올바르지 않습니다.", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
