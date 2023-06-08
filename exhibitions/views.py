@@ -10,7 +10,16 @@ from .serializers import ExhibitionSerializer
 
 class ExhibitionView(APIView):
     def get(self, request):  # 전시회 목록 불러오기
-        exhibitions = Exhibition.objects.order_by("-created_at")
+        # 카테고리 정보 가져오기
+        category = request.query_params.get("category", None)
+        # 카테고리 정보 존재 시
+        if category:
+            exhibitions = Exhibition.objects.filter(
+                # category에 params value가 포함된 전시회 정보
+                category__icontains=category
+            ).order_by("-created_at")
+        else:
+            exhibitions = Exhibition.objects.order_by("-created_at")
         # 페이지네이션 class 객체 생성
         pagination = PageNumberPagination()
         # 페이지네이션 진행
