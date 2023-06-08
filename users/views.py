@@ -43,3 +43,10 @@ class UserDetailView(APIView):
             return Response(
                 {"message": f"${serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST
             )
+
+    def delete(self, request):
+        """회원 계정을 비활성화합니다."""
+        user = request.user
+        user.is_active = False
+        user.save()
+        return Response({"message": "탈퇴되었습니다."})
