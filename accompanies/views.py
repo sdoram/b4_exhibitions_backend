@@ -5,9 +5,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from accompanies.models import Accompany, Apply
 from accompanies.serializers import (
-    AccompanyCreateSerializers,
-    AccompanySerializers,
-    ApplyCreateSerializers,
+    AccompanyCreateSerializer,
+    AccompanySerializer,
+    ApplyCreateSerializer,
 )
 from exhibitions.models import Exhibition
 
@@ -25,7 +25,7 @@ class AccompanyView(APIView):
         """
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
         accompanies = exhibition.accompanies.all()
-        serializer = AccompanySerializers(accompanies, many=True)
+        serializer = AccompanySerializer(accompanies, many=True)
         return Response(
             {"message": "조회를 성공하셨습니다.", "data": serializer.data},
             status=status.HTTP_200_OK,
@@ -44,7 +44,7 @@ class AccompanyView(APIView):
             HTTP_400_BAD_REQUEST : 값이 제대로 입력되지 않음\n
             HTTP_401_UNAUTHORIZED : 로그인 하지 않은 사용자
         """
-        serializer = AccompanyCreateSerializers(data=request.data)
+        serializer = AccompanyCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, exhibition_id=exhibition_id)
             return Response(
@@ -73,7 +73,7 @@ class AccompanyView(APIView):
         """
         accompany = get_object_or_404(Accompany, id=accompany_id)
         if request.user == accompany.user:
-            serializer = AccompanyCreateSerializers(accompany, data=request.data)
+            serializer = AccompanyCreateSerializer(accompany, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(
@@ -123,7 +123,7 @@ class ApplyView(APIView):
             HTTP_400_BAD_REQUEST : 값이 제대로 입력되지 않음\n
             HTTP_401_UNAUTHORIZED : 로그인 하지 않은 사용자
         """
-        serializer = ApplyCreateSerializers(data=request.data)
+        serializer = ApplyCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, accompany_id=accompany_id)
             return Response(
@@ -149,7 +149,7 @@ class ApplyView(APIView):
         """
         apply = get_object_or_404(Apply, id=apply_id)
         if request.user == apply.user:
-            serializer = ApplyCreateSerializers(apply, data=request.data)
+            serializer = ApplyCreateSerializer(apply, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(
