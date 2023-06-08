@@ -93,6 +93,7 @@ class AccompanyView(APIView):
             accompany_id (int): 해당 동행 구하기 댓글의 pk값\n
         Returns:
             HTTP_204_NO_CONTENT : 댓글 삭제 완료\n
+            HTTP_401_UNAUTHORIZED : 로그인 하지 않은 사용자\n
             HTTP_403_FORBIDDEN : 권한이 없는 사용자
         """
         accompany = get_object_or_404(Accompany, id=accompany_id)
