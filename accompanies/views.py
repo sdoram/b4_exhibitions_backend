@@ -64,6 +64,7 @@ class AccompanyView(APIView):
         Returns:
             HTTP_200_OK : 댓글 수정 완료\n
             HTTP_400_BAD_REQUEST : 값이 제대로 입력되지 않음\n
+            HTTP_401_UNAUTHORIZED : 로그인 하지 않은 사용자\n
             HTTP_403_FORBIDDEN : 권한이 없는 사용자
         """
         accompany = get_object_or_404(Accompany, id=accompany_id)
