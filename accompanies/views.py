@@ -85,3 +85,20 @@ class AccompanyView(APIView):
                 {"message": "권한이 없습니다.", "errors": serializer.errors},
                 status=status.HTTP_403_FORBIDDEN,
             )
+
+    def delete(self, request, accompany_id):
+        """동행 구하기 댓글 삭제하기\n
+        Args:
+            accompany_id (int): 해당 동행 구하기 댓글의 pk값\n
+        Returns:
+            HTTP_204_NO_CONTENT : 댓글 삭제 완료\n
+            HTTP_403_FORBIDDEN : 권한이 없는 사용자
+        """
+        accompany = get_object_or_404(Accompany, id=accompany_id)
+        if request.user == accompany.user:
+            accompany.delete()
+            return Response(
+                {"message": "동행 구하기 글이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT
+            )
+        else:
+            return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
