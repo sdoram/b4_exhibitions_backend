@@ -166,3 +166,21 @@ class ApplyView(APIView):
                 {"message": "권한이 없습니다.", "errors": serializer.errors},
                 status=status.HTTP_403_FORBIDDEN,
             )
+
+    def delete(self, request, apply_id):
+        """동행 신청하기 댓글 삭제하기\n
+        Args:
+            apply_id (int): 해당 동행 신청하기 댓글의 pk값\n
+        Returns:
+            HTTP_204_NO_CONTENT : 댓글 삭제 완료\n
+            HTTP_401_UNAUTHORIZED : 로그인 하지 않은 사용자\n
+            HTTP_403_FORBIDDEN : 권한이 없는 사용자
+        """
+        apply = get_object_or_404(Apply, id=apply_id)
+        if request.user == apply.user:
+            apply.delete()
+            return Response(
+                {"message": "동행 신청하기 댓글이 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT
+            )
+        else:
+            return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
