@@ -3,6 +3,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from accompanies.models import Accompany
 from accompanies.serializers import AccompanyCreateSerializers, AccompanySerializers
 from exhibitions.models import Exhibition
 
@@ -48,3 +49,36 @@ class AccompanyView(APIView):
             )
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, accompany_id):
+        """동행 구하기 댓글 수정하기\n
+        Args:
+            request.data["content"] (char): 동행 구하기 내용\n
+            request.data["personnel"] (int): 동행 목표 인원\n
+            request.data["start_time"] (datetime): 모임 시작 시간\n
+            request.data["end_time"] (datetime): 모임 종료 시간\n
+            accompany_id (int): 해당 동행 구하기 댓글의 pk값\n
+        Returns:
+            HTTP_200_OK : 댓글 수정 완료\n
+            HTTP_400_BAD_REQUEST : 값이 제대로 입력되지 않음\n
+            HTTP_403_FORBIDDEN : 권한이 없는 사용자
+        """
+        accompany = get_object_or_404(Accompany, id=accompany_id)
+        if request.user == accompany.user:
+            serializer = AccompanyCreateSerializers(accompany, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {"message": "동행 구하기 글이 수정되었습니다.", "data": serializer.data},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"message": "요청이 올바르지 않습니다.", "errors": serializer.errors},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            return Response(
+                {"message": "권한이 없습니다.", "errors": serializer.errors},
+                status=status.HTTP_403_FORBIDDEN,
+            )
