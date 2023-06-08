@@ -48,7 +48,10 @@ class AccompanyView(APIView):
                 status=status.HTTP_201_CREATED,
             )
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"message": "요청이 올바르지 않습니다.", "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
     def put(self, request, accompany_id):
         """동행 구하기 댓글 수정하기\n
