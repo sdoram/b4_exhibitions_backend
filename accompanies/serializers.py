@@ -8,6 +8,12 @@ class ApplyCreateSerializers(serializers.ModelSerializer):
         fields = ("content",)
 
 
+class ApplySerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Apply
+        fields = "__all__"
+
+
 class AccompanyCreateSerializers(serializers.ModelSerializer):
     class Meta:
         model = Accompany
@@ -15,6 +21,8 @@ class AccompanyCreateSerializers(serializers.ModelSerializer):
 
 
 class AccompanySerializers(serializers.ModelSerializer):
+    applies = ApplySerializers(many=True)
+
     class Meta:
         model = Accompany
         fields = "__all__"
