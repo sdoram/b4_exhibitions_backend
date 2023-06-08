@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from users.models import User
 
 
 class Review(models.Model):
@@ -10,3 +10,6 @@ class Review(models.Model):
     image = models.ImageField("사진", blank=True, null=True)
     created_at = models.DateTimeField("생성시간", auto_now_add=True)
     updated_at = models.DateTimeField("수정시간", auto_now=True)
+
+    def __str__(self):
+        return str(self.content)
