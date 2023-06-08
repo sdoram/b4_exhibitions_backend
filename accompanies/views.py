@@ -28,9 +28,9 @@ class AccompanyView(APIView):
         )
 
     def post(self, request, exhibition_id):
-        """동행구하기 댓글 작성하기\n
+        """동행 구하기 댓글 작성하기\n
         Args:
-            request.data["content"] (char): 동행구하기 내용\n
+            request.data["content"] (char): 동행 구하기 내용\n
             request.data["personnel"] (int): 동행 목표 인원\n
             request.data["start_time"] (datetime): 모임 시작 시간\n
             request.data["end_time"] (datetime): 모임 종료 시간\n
