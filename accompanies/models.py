@@ -1,23 +1,25 @@
 from django.db import models
-from django.contrib.auth.models import User
+from users.models import User
 from exhibitions.models import Exhibition
 
 
 class Accompany(models.Model):
-    user = models.ManyToManyField(
+    user = models.ForeignKey(
         User,
+        on_delete=models.CASCADE,
         related_name="get_accompanies",
         verbose_name="동행구하기 작성자",
     )
-    info_name = models.ManyToManyField(
+    exhibition = models.ForeignKey(
         Exhibition,
+        on_delete=models.CASCADE,
         related_name="accompanies",
         verbose_name="전시회 정보",
     )
     content = models.TextField("동행구하기 내용")
     personnel = models.PositiveIntegerField("동행인원")
-    start_time = models.DateTimeField("모임시작시간", blank=True, null=True)
-    end_time = models.DateTimeField("모임종료시간", blank=True, null=True)
+    start_time = models.DateTimeField("모임시작시간")
+    end_time = models.DateTimeField("모임종료시간")
     created_at = models.DateTimeField("생성시간", auto_now_add=True)
     updated_at = models.DateTimeField("수정시간", auto_now=True)
 
@@ -26,13 +28,15 @@ class Accompany(models.Model):
 
 
 class Apply(models.Model):
-    user = models.ManyToManyField(
+    user = models.ForeignKey(
         User,
+        on_delete=models.CASCADE,
         related_name="get_applies",
         verbose_name="동행신청하기 작성자",
     )
-    accompany = models.ManyToManyField(
+    accompany = models.ForeignKey(
         Accompany,
+        on_delete=models.CASCADE,
         related_name="applies",
         verbose_name="동행구하기 댓글",
     )
