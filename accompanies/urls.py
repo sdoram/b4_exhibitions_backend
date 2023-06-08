@@ -9,4 +9,5 @@ urlpatterns = [
         name="accompany_view",
     ),
     path("<int:accompany_id>/apply/", views.ApplyView.as_view(), name="apply_view"),
+    path("apply/<int:apply_id>/", views.ApplyView.as_view(), name="apply_view"),
 ]

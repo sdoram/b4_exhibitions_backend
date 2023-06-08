@@ -3,7 +3,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from accompanies.models import Accompany
+from accompanies.models import Accompany, Apply
 from accompanies.serializers import (
     AccompanyCreateSerializers,
     AccompanySerializers,
@@ -134,4 +134,35 @@ class ApplyView(APIView):
             return Response(
                 {"message": "요청이 올바르지 않습니다.", "errors": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    def put(self, request, apply_id):
+        """동행 신청하기 댓글 수정하기\n
+        Args:
+            request.data["content"] (char): 동행 구하기 내용\n
+            apply_id (int): 해당 동행 신청하기 댓글의 pk값\n
+        Returns:
+            HTTP_200_OK : 댓글 수정 완료\n
+            HTTP_400_BAD_REQUEST : 값이 제대로 입력되지 않음\n
+            HTTP_401_UNAUTHORIZED : 로그인 하지 않은 사용자\n
+            HTTP_403_FORBIDDEN : 권한이 없는 사용자
+        """
+        apply = get_object_or_404(Apply, id=apply_id)
+        if request.user == apply.user:
+            serializer = ApplyCreateSerializers(apply, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {"message": "동행 신청하기 댓글이 수정되었습니다.", "data": serializer.data},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"message": "요청이 올바르지 않습니다.", "errors": serializer.errors},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            return Response(
+                {"message": "권한이 없습니다.", "errors": serializer.errors},
+                status=status.HTTP_403_FORBIDDEN,
             )
