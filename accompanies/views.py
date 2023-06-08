@@ -139,7 +139,7 @@ class ApplyView(APIView):
     def put(self, request, apply_id):
         """동행 신청하기 댓글 수정하기\n
         Args:
-            request.data["content"] (char): 동행 구하기 내용\n
+            request.data["content"] (char): 동행 신청하기 내용\n
             apply_id (int): 해당 동행 신청하기 댓글의 pk값\n
         Returns:
             HTTP_200_OK : 댓글 수정 완료\n
