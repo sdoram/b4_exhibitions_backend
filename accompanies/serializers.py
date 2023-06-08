@@ -2,26 +2,26 @@ from rest_framework import serializers
 from accompanies.models import Accompany, Apply
 
 
-class ApplyCreateSerializers(serializers.ModelSerializer):
+class ApplyCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Apply
         fields = ("content",)
 
 
-class ApplySerializers(serializers.ModelSerializer):
+class ApplySerializer(serializers.ModelSerializer):
     class Meta:
         model = Apply
         fields = "__all__"
 
 
-class AccompanyCreateSerializers(serializers.ModelSerializer):
+class AccompanyCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Accompany
         fields = ("content", "personnel", "start_time", "end_time")
 
 
-class AccompanySerializers(serializers.ModelSerializer):
-    applies = ApplySerializers(many=True)
+class AccompanySerializer(serializers.ModelSerializer):
+    applies = ApplySerializer(many=True)
 
     class Meta:
         model = Accompany
