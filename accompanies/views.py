@@ -73,7 +73,9 @@ class AccompanyView(APIView):
         """
         accompany = get_object_or_404(Accompany, id=accompany_id)
         if request.user == accompany.user:
-            serializer = AccompanyCreateSerializer(accompany, data=request.data)
+            serializer = AccompanyCreateSerializer(
+                accompany, data=request.data, partial=True
+            )
             if serializer.is_valid():
                 serializer.save()
                 return Response(
