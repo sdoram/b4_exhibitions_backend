@@ -21,8 +21,8 @@ class ExhibitionAdmin(admin.ModelAdmin):
         "category",
         "info_name",
         "location",
-        "start_time",
-        "end_time",
+        "start_date",
+        "end_date",
     ]
     list_display_links = ["info_name"]
 
