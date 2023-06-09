@@ -48,6 +48,8 @@ class ExhibitionDetailView(APIView):
         serializer = ExhibitionSerializer(exhibition)
         return Response(serializer.data)
 
+    permission_classes = [IsAdminUser]
+
     def put(self, request, exhibition_id):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
         serializer = ExhibitionSerializer(exhibition, data=request.data)
