@@ -10,8 +10,15 @@ from users.models import User
 class UserView(APIView):
     def post(self, request):
         """회원 가입을 실행합니다."""
+        password = request.data["password"]
+        password_check = request.data["password_check"]
         serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
+        if password != password_check:
+            return Response(
+                {"message": "재확인 비밀번호가 일치하지 않습니다."},
+                status=status.HTTP_406_NOT_ACCEPTABLE,
+            )
+        elif serializer.is_valid():
             serializer.save()
             return Response(
                 {"message": "회원가입이 완료되었습니다."}, status=status.HTTP_201_CREATED
