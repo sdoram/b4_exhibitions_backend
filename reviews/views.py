@@ -36,8 +36,8 @@ class ReviewView(APIView):
 
 class ReviewDetailView(APIView):
     # 리뷰 수정
-    def put(self, request, exhibition_id):
-        review = get_object_or_404(Review, exhibition_id=exhibition_id)
+    def put(self, request, review_id):
+        review = get_object_or_404(Review, id=review_id)
         if request.user == review.user:
             serializer = ReviewCreateSerializer(review, data=request.data)
             if serializer.is_valid(raise_exception=True):
@@ -49,8 +49,8 @@ class ReviewDetailView(APIView):
             return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
 
     # 삭제
-    def delete(self, request, exhibition_id):
-        review = get_object_or_404(Review, exhibition_id=exhibition_id)
+    def delete(self, request, review_id):
+        review = get_object_or_404(Review, id=review_id)
 
         if request.user == review.user:
             review.delete()
