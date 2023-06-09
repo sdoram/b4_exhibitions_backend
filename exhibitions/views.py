@@ -10,8 +10,6 @@ from .serializers import ExhibitionSerializer
 
 
 class ExhibitionView(APIView):
-    permission_classes = [IsAuthenticated]
-
     def get(self, request):  # 전시회 목록 불러오기
         # 카테고리 정보 가져오기
         category = request.query_params.get("category", None)
@@ -31,6 +29,8 @@ class ExhibitionView(APIView):
         serializer = ExhibitionSerializer(paginated_exhibitions, many=True)
         return pagination.get_paginated_response(serializer.data)
 
+    permission_classes = [IsAdminUser]
+
     def post(self, request):  # 전시회 작성
         serializer = ExhibitionSerializer(data=request.data)
         if serializer.is_valid():
@@ -41,6 +41,8 @@ class ExhibitionView(APIView):
 
 
 class ExhibitionDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, exhibition_id):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
         serializer = ExhibitionSerializer(exhibition)
