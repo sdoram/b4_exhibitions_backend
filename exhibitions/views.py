@@ -32,7 +32,7 @@ class ExhibitionView(APIView):
         return pagination.get_paginated_response(serializer.data)
 
     def post(self, request):  # 전시회 작성
-        if request.user.is_staff:
+        if request.user.is_staff:  # 관리자만 작성 가능
             serializer = ExhibitionSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save(user=request.user)
@@ -44,6 +44,11 @@ class ExhibitionView(APIView):
 
 
 class ExhibitionDetailView(APIView):
+    def get_permissions(self):
+        if self.request.method in ["PUT", "DELETE"]:
+            return [IsAdminUser()]
+        return [IsAuthenticatedOrReadOnly()]
+
     def get(self, request, exhibition_id):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
         serializer = ExhibitionSerializer(exhibition)
