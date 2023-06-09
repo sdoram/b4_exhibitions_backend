@@ -1,5 +1,5 @@
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
@@ -9,6 +9,8 @@ from .serializers import ReviewSerializer, ReviewCreateSerializer
 
 
 class ReviewView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     # 리뷰 보기
     def get(self, request, exhibition_id):
         reviews = Review.objects.filter(exhibition_id=exhibition_id)
