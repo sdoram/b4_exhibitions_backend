@@ -72,4 +72,4 @@ class ExhibitionLikeView(APIView):  # 좋아요 기능
             return Response({"message": "좋아요"}, status=status.HTTP_201_CREATED)
         else:
             exhibition.likes.remove(request.user)
-            return Response({"message": "좋아요 취소"}, status=status.HTTP_204_NO_CONTENT)
+            return Response({"message": "좋아요 취소"}, status=status.HTTP_200_OK)
