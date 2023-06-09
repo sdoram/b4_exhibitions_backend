@@ -59,8 +59,9 @@ class User(AbstractBaseUser):
         verbose_name="성별",
     )
     age = models.PositiveIntegerField(null=True, verbose_name="사용자 나이")
+    bio = models.TextField(blank=True, null=True, verbose_name="사용자 자기소개")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="사용자 계정 생성일")
-    updated_at = models.DateTimeField(auto_now=True, verbose_name="마지막 회원정보 수정일")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="사용자 정보 마지막 수정일")
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -71,7 +72,7 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ["nickname"]  # createsuperuser할때 어떤 필드들을 작성받을 지 적는 필드.
 
     def __str__(self):
-        return self.email
+        return self.nickname
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
