@@ -44,11 +44,6 @@ class ExhibitionView(APIView):
 
 
 class ExhibitionDetailView(APIView):
-    def get_permissions(self):
-        if self.request.method in ["PUT", "DELETE"]:
-            return [IsAdminUser()]
-        return [IsAuthenticatedOrReadOnly()]
-
     def get(self, request, exhibition_id):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
         serializer = ExhibitionSerializer(exhibition)
@@ -76,4 +71,4 @@ class ExhibitionLikeView(APIView):  # 좋아요 기능
             return Response({"message": "좋아요"}, status=status.HTTP_201_CREATED)
         else:
             exhibition.likes.remove(request.user)
-            return Response({"message": "좋아요 취소"}, status=status.HTTP_200_OK)
+            return Response({"message": "좋아요 취소"}, status=status.HTTP_204_NO_CONTENT)
