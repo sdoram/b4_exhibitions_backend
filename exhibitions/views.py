@@ -6,7 +6,11 @@ from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 
 from .models import Exhibition
-from .serializers import ExhibitionSerializer
+from .serializers import (
+    ExhibitionSerializer,
+    ExhibitionReviewSerializer,
+    ExhibitionAccompanySerializer,
+)
 
 
 class ExhibitionView(APIView):
@@ -36,11 +40,17 @@ class ExhibitionView(APIView):
             serializer = ExhibitionSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save(user=request.user)
-                return Response({"message": "게시글이 등록되었습니다."}, status=status.HTTP_201_CREATED)
+                return Response(
+                    {"message": "게시글이 등록되었습니다."}, status=status.HTTP_201_CREATED
+                )
             else:
-                return Response({"message": "요청이 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"message": "요청이 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST
+                )
         else:
-            return Response({"message": "관리자만 글을 작성할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"message": "관리자만 글을 작성할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN
+            )
 
 
 class ExhibitionDetailView(APIView):
@@ -51,7 +61,13 @@ class ExhibitionDetailView(APIView):
 
     def get(self, request, exhibition_id):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
-        serializer = ExhibitionSerializer(exhibition)
+        select = request.query_params.get("select", None)
+        if select == "review":
+            serializer = ExhibitionReviewSerializer(exhibition)
+        elif select == "accompany":
+            serializer = ExhibitionAccompanySerializer(exhibition)
+        else:
+            serializer = ExhibitionReviewSerializer(exhibition)
         return Response(serializer.data)
 
     def put(self, request, exhibition_id):
