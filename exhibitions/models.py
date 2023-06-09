@@ -12,8 +12,8 @@ class Exhibition(models.Model):
     updated_at = models.DateTimeField("수정시간", auto_now=True)
     likes = models.ManyToManyField(User, related_name="exhibition_likes", blank=True)
     category = models.CharField("카테고리", max_length=100, blank=True, null=True)
-    start_time = models.DateTimeField("시작일", blank=True, null=True)
-    end_time = models.DateTimeField("종료일", blank=True, null=True)
+    start_date = models.DateField("시작일", blank=True, null=True)
+    end_date = models.DateField("종료일", blank=True, null=True)
 
     def __str__(self):
         return str(self.info_name)

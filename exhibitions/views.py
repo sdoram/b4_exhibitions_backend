@@ -1,6 +1,7 @@
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 
@@ -9,6 +10,8 @@ from .serializers import ExhibitionSerializer
 
 
 class ExhibitionView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]  # 인증된 사용자, 인증되지 않은 사용자 모두 읽기 가능
+
     def get(self, request):  # 전시회 목록 불러오기
         # 카테고리 정보 가져오기
         category = request.query_params.get("category", None)
@@ -29,19 +32,23 @@ class ExhibitionView(APIView):
         return pagination.get_paginated_response(serializer.data)
 
     def post(self, request):  # 전시회 작성
-        serializer = ExhibitionSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)
-            return Response(
-                {"message": "게시글이 등록되었습니다."}, status=status.HTTP_201_CREATED
-            )
+        if request.user.is_staff:  # 관리자만 작성 가능
+            serializer = ExhibitionSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(user=request.user)
+                return Response({"message": "게시글이 등록되었습니다."}, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"message": "요청이 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(
-                {"message": "요청이 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"message": "관리자만 글을 작성할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
 
 
 class ExhibitionDetailView(APIView):
+    def get_permissions(self):
+        if self.request.method in ["PUT", "DELETE"]:
+            return [IsAdminUser()]
+        return [IsAuthenticatedOrReadOnly()]
+
     def get(self, request, exhibition_id):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
         serializer = ExhibitionSerializer(exhibition)
