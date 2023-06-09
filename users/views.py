@@ -17,7 +17,6 @@ class UserView(APIView):
                 {"message": "회원가입이 완료되었습니다."}, status=status.HTTP_201_CREATED
             )
         else:
-            print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -26,13 +25,9 @@ class CustomTokenObtainPairView(TokenObtainPairView):  # 토큰 부여하는 코
 
 
 class UserDetailView(APIView):
-    def get(self, request):
-        """회원 정보를 불러옵니다."""
-        return Response(UserSerializer(request.user).data)
-
     def patch(self, request):
         """회원 정보를 수정합니다."""
-        user = User.objects.get(email=request.user)
+        user = request.user
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
