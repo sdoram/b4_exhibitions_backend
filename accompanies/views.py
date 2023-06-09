@@ -16,7 +16,7 @@ class AccompanyView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def get(self, request, exhibition_id):
-        """동행 구하기 댓글 전체 조회하기\n
+        """전시회별 동행 구하기 댓글리스트 조회하기\n
         Args:
             exhibition_id (int): 해당 댓글이 조회될 전시회 게시글의 pk값\n
         Returns:
