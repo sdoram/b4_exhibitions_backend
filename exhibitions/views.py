@@ -1,6 +1,7 @@
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 
@@ -9,6 +10,8 @@ from .serializers import ExhibitionSerializer
 
 
 class ExhibitionView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):  # 전시회 목록 불러오기
         # 카테고리 정보 가져오기
         category = request.query_params.get("category", None)
@@ -32,13 +35,9 @@ class ExhibitionView(APIView):
         serializer = ExhibitionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
-            return Response(
-                {"message": "게시글이 등록되었습니다."}, status=status.HTTP_201_CREATED
-            )
+            return Response({"message": "게시글이 등록되었습니다."}, status=status.HTTP_201_CREATED)
         else:
-            return Response(
-                {"message": "요청이 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"message": "요청이 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ExhibitionDetailView(APIView):
