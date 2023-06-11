@@ -60,6 +60,9 @@ class User(AbstractBaseUser):
     )
     age = models.PositiveIntegerField(null=True, verbose_name="사용자 나이")
     bio = models.TextField(blank=True, null=True, verbose_name="사용자 자기소개")
+    profile_image = models.ImageField(
+        upload_to="profile-images/", blank=True, null=True, verbose_name="사용자 프로필이미지"
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="사용자 계정 생성일")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="사용자 정보 마지막 수정일")
 
