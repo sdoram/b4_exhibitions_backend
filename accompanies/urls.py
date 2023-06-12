@@ -4,12 +4,12 @@ from accompanies import views
 app_name = "accompanies"
 
 urlpatterns = [
-    path("<int:exhibition_id>/", views.AccompanyView.as_view(), name="accompany_view"),
+    path("<int:exhibition_id>/", views.AccompanyView.as_view(), name="accompany-view"),
     path(
         "detail/<int:accompany_id>/",
         views.AccompanyView.as_view(),
-        name="accompany_view",
+        name="accompany-view",
     ),
-    path("<int:accompany_id>/apply/", views.ApplyView.as_view(), name="apply_view"),
-    path("apply/<int:apply_id>/", views.ApplyView.as_view(), name="apply_view"),
+    path("<int:accompany_id>/apply/", views.ApplyView.as_view(), name="apply-view"),
+    path("apply/<int:apply_id>/", views.ApplyView.as_view(), name="apply-view"),
 ]
