@@ -8,8 +8,7 @@ from rest_framework.pagination import PageNumberPagination
 from .models import Exhibition
 from .serializers import (
     ExhibitionSerializer,
-    ExhibitionReviewSerializer,
-    ExhibitionAccompanySerializer,
+    ExhibitionDetailSerializer,
 )
 
 
@@ -61,13 +60,10 @@ class ExhibitionDetailView(APIView):
 
     def get(self, request, exhibition_id):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
-        select = request.query_params.get("select", None)
-        if select == "review":
-            serializer = ExhibitionReviewSerializer(exhibition)
-        elif select == "accompany":
-            serializer = ExhibitionAccompanySerializer(exhibition)
-        else:
-            serializer = ExhibitionReviewSerializer(exhibition)
+        # query_params를 serializer로 전달
+        serializer = ExhibitionDetailSerializer(
+            exhibition, context={"select": request.query_params.get("select", None)}
+        )
         return Response(serializer.data)
 
     def put(self, request, exhibition_id):
