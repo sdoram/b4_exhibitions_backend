@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from users.models import User
+from datetime import datetime, date
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -33,3 +34,15 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["is_admin"] = user.is_admin
 
         return token
+
+
+class UserMypageSerializer(serializers.ModelSerializer):
+    since_together = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ("nickname", "bio", "created_at", "since_together", "profile_image")
+
+    def get_since_together(self, request_user):
+        calculate = date.today() - request_user.created_at.date()
+        return calculate.days
