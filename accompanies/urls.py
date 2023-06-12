@@ -1,6 +1,8 @@
 from django.urls import path
 from accompanies import views
 
+app_name = "accompanies"
+
 urlpatterns = [
     path("<int:exhibition_id>/", views.AccompanyView.as_view(), name="accompany_view"),
     path(
