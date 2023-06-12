@@ -35,14 +35,14 @@ class AccompanyViewTest(APITestCase):
 
     def setUp(self):
         self.access_token = self.client.post(
-            reverse("users:user_signin"), self.user_data
+            reverse("users:user-signin"), self.user_data
         ).data["access"]
 
     # --------------동행 구하기 댓글 작성 테스트------------------------
     def test_create_accompany(self):
         response = self.client.post(
             path=reverse(
-                "accompanies:accompany_view",
+                "accompanies:accompany-view",
                 kwargs={"exhibition_id": self.exhibition.id},
             ),
             data=self.accompany_data,
@@ -71,7 +71,7 @@ class AccompanyViewTest(APITestCase):
             )
         response = self.client.get(
             path=reverse(
-                "accompanies:accompany_view",
+                "accompanies:accompany-view",
                 kwargs={"exhibition_id": self.exhibition.id},
             ),
             HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
@@ -94,7 +94,7 @@ class AccompanyViewTest(APITestCase):
         }
 
         response = self.client.put(
-            path=reverse("accompanies:accompany_view", kwargs={"accompany_id": 1}),
+            path=reverse("accompanies:accompany-view", kwargs={"accompany_id": 1}),
             data=self.accompany_updated_data,
             HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
         )
@@ -113,7 +113,7 @@ class AccompanyViewTest(APITestCase):
         )
 
         response = self.client.delete(
-            path=reverse("accompanies:accompany_view", kwargs={"accompany_id": 1}),
+            path=reverse("accompanies:accompany-view", kwargs={"accompany_id": 1}),
             HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
         )
 
@@ -157,14 +157,14 @@ class ApplyViewTest(APITestCase):
 
     def setUp(self):
         self.access_token = self.client.post(
-            reverse("users:user_signin"), self.user_data
+            reverse("users:user-signin"), self.user_data
         ).data["access"]
 
     # --------------동행 신청하기 댓글 작성 테스트------------------------
     def test_create_apply(self):
         response = self.client.post(
             path=reverse(
-                "accompanies:apply_view",
+                "accompanies:apply-view",
                 kwargs={"accompany_id": self.accompany.id},
             ),
             data=self.apply_data,
@@ -183,7 +183,7 @@ class ApplyViewTest(APITestCase):
         self.apply_updated_data = {"content": "Updated Test Content"}
 
         response = self.client.put(
-            path=reverse("accompanies:apply_view", kwargs={"apply_id": 1}),
+            path=reverse("accompanies:apply-view", kwargs={"apply_id": 1}),
             data=self.apply_updated_data,
             HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
         )
@@ -199,7 +199,7 @@ class ApplyViewTest(APITestCase):
         )
 
         response = self.client.delete(
-            path=reverse("accompanies:apply_view", kwargs={"apply_id": 1}),
+            path=reverse("accompanies:apply-view", kwargs={"apply_id": 1}),
             HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
         )
 
