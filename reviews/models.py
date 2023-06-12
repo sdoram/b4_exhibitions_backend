@@ -8,8 +8,14 @@ class Review(models.Model):
     rating = models.PositiveIntegerField(
         "별점", validators=[MaxValueValidator(5), MinValueValidator(1)]
     )
-    exhibition = models.ForeignKey("exhibitions.Exhibition", on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    exhibition = models.ForeignKey(
+        "exhibitions.Exhibition",
+        on_delete=models.CASCADE,
+        related_name="exhibition_reviews",
+    )
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="user_reviews"
+    )
     image = models.ImageField("사진", blank=True, null=True, upload_to="reviews/%Y/%m/")
     created_at = models.DateTimeField("생성시간", auto_now_add=True)
     updated_at = models.DateTimeField("수정시간", auto_now=True)
