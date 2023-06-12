@@ -34,21 +34,22 @@ class ExhibitionSerializer(serializers.ModelSerializer):
 class ExhibitionDetailSerializer(serializers.ModelSerializer):
     """전시회 상세보기"""
 
-    accompanies = AccompanySerializer(many=True)
-    reviews = ReviewSerializer(source="review_set", many=True)
-
     # 읽기 전용 직렬화
-    # serializer.data에서 select가 안된 다른 필드 값을 ''으로 변경
     def to_representation(self, instance):
         # serializer.data
         data = super().to_representation(instance)
         # query_params
         select = self.context["select"]
-        # 데이터 값 빈값으로 교체
+        # select에 따라 filed 추가
         if select == "accompanies":
-            data["reviews"] = ""
+            accompany = instance.accompanies.all()
+            serializer = AccompanySerializer(accompany, many=True)
+            data["accompanies"] = serializer.data
         else:
-            data["accompanies"] = ""
+            # related_name 설정 필요
+            reviews = instance.review_set.all()
+            serializer = ReviewSerializer(reviews, many=True)
+            data["reviews"] = serializer.data
         return data
 
     class Meta:
