@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Exhibition
 from reviews.serializers import ReviewSerializer
 from accompanies.serializers import AccompanySerializer
+from .paginations import CustomPageNumberPagination
 
 
 class ExhibitionSerializer(serializers.ModelSerializer):
@@ -38,18 +39,25 @@ class ExhibitionDetailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         # serializer.data
         data = super().to_representation(instance)
+        pagination = CustomPageNumberPagination()
         # query_params
         select = self.context["select"]
         # select에 따라 filed 추가
         if select == "accompanies":
             accompany = instance.accompanies.all()
-            serializer = AccompanySerializer(accompany, many=True)
-            data["accompanies"] = serializer.data
+            paginated_accompanies = pagination.paginate_queryset(
+                accompany, self.context["request"]
+            )
+            serializer = AccompanySerializer(paginated_accompanies, many=True)
+            data["accompanies"] = pagination.get_paginated_response(serializer.data)
         else:
             # related_name 설정 필요
             reviews = instance.review_set.all()
-            serializer = ReviewSerializer(reviews, many=True)
-            data["reviews"] = serializer.data
+            paginated_reviews = pagination.paginate_queryset(
+                reviews, self.context["request"]
+            )
+            serializer = ReviewSerializer(paginated_reviews, many=True)
+            data["reviews"] = pagination.get_paginated_response(serializer.data)
         return data
 
     class Meta:
