@@ -1,5 +1,9 @@
 from rest_framework import serializers
+
 from .models import Exhibition
+from reviews.serializers import ReviewSerializer
+from accompanies.serializers import AccompanySerializer
+from .paginations import CustomPageNumberPagination
 
 
 class ExhibitionSerializer(serializers.ModelSerializer):
@@ -26,3 +30,36 @@ class ExhibitionSerializer(serializers.ModelSerializer):
     #     if obj.image:
     #         return obj.image.url
     #     return None
+
+
+class ExhibitionDetailSerializer(serializers.ModelSerializer):
+    """전시회 상세보기"""
+
+    # 읽기 전용 직렬화
+    def to_representation(self, instance):
+        # serializer.data
+        data = super().to_representation(instance)
+        pagination = CustomPageNumberPagination()
+        # query_params
+        select = self.context["select"]
+        # select에 따라 filed 추가
+        if select == "accompanies":
+            accompany = instance.accompanies.all()
+            paginated_accompanies = pagination.paginate_queryset(
+                accompany, self.context["request"]
+            )
+            serializer = AccompanySerializer(paginated_accompanies, many=True)
+            data["accompanies"] = pagination.get_paginated_response(serializer.data)
+        else:
+            # related_name 설정 필요
+            reviews = instance.review_set.all()
+            paginated_reviews = pagination.paginate_queryset(
+                reviews, self.context["request"]
+            )
+            serializer = ReviewSerializer(paginated_reviews, many=True)
+            data["reviews"] = pagination.get_paginated_response(serializer.data)
+        return data
+
+    class Meta:
+        model = Exhibition
+        exclude = []
