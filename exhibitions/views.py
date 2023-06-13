@@ -39,17 +39,11 @@ class ExhibitionView(APIView):
             serializer = ExhibitionSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save(user=request.user)
-                return Response(
-                    {"message": "게시글이 등록되었습니다."}, status=status.HTTP_201_CREATED
-                )
+                return Response({"message": "게시글이 등록되었습니다."}, status=status.HTTP_201_CREATED)
             else:
-                return Response(
-                    {"message": "요청이 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST
-                )
+                return Response({"message": "요청이 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response(
-                {"message": "관리자만 글을 작성할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN
-            )
+            return Response({"message": "관리자만 글을 작성할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN)
 
 
 class ExhibitionDetailView(APIView):
@@ -88,4 +82,4 @@ class ExhibitionLikeView(APIView):  # 좋아요 기능
             return Response({"message": "좋아요"}, status=status.HTTP_201_CREATED)
         else:
             exhibition.likes.remove(request.user)
-            return Response({"message": "좋아요 취소"}, status=status.HTTP_204_NO_CONTENT)
+            return Response({"message": "좋아요 취소"}, status=status.HTTP_200_OK)
