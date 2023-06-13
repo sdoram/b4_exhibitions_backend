@@ -1,16 +1,14 @@
 from django.urls import path
-from .views import ExhibitionView, ExhibitionDetailView, ExhibitionLikeView
+from exhibitions import views
 
 app_name = "exhibitions"
 
 urlpatterns = [
-    path("", ExhibitionView.as_view(), name="exhibition"),
-    path(
-        "<int:exhibition_id>/", ExhibitionDetailView.as_view(), name="exhibition-detail"
-    ),
+    path("", views.ExhibitionView.as_view(), name="exhibition"),
+    path("<int:exhibition_id>/", views.ExhibitionDetailView.as_view(), name="exhibition-detail"),
     path(
         "<int:exhibition_id>/like/",
-        ExhibitionLikeView.as_view(),
+        views.ExhibitionLikeView.as_view(),
         name="exhibition-like",
     ),
 ]
