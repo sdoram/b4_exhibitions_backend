@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
+from .paginations import CustomPageNumberPagination
 
 from .models import Exhibition
 from reviews.models import Review
@@ -102,6 +103,7 @@ class ExhibitionLikeView(APIView):  # 좋아요 기능
 class ExhibitionSearchView(APIView):
     def get(self, request):
         search = request.query_params.get("search", None)
+        pagination = CustomPageNumberPagination()
         # 키워드가 있는 경우
         if search:
             # 전시회 내용 or 제목으로 검색
@@ -120,10 +122,16 @@ class ExhibitionSearchView(APIView):
             exhibitions = Exhibition.objects.all().order_by("-created_at")
             reviews = Review.objects.all().order_by("-created_at")
             accompanies = Accompany.objects.all().order_by("-created_at")
+        paginated_exhibitions = pagination.paginate_queryset(exhibitions, request)
+        paginated_reviews = pagination.paginate_queryset(reviews, request)
+        paginated_accompanies = pagination.paginate_queryset(accompanies, request)
         results = (
-            ExhibitionSerializer(exhibitions, many=True),
-            ReviewSerializer(reviews, many=True),
-            AccompanySerializer(accompanies, many=True),
+            ExhibitionSerializer(paginated_exhibitions, many=True),
+            ReviewSerializer(paginated_reviews, many=True),
+            AccompanySerializer(paginated_accompanies, many=True),
         )
         # serializer.data의 리스트를 Response로 보내주기
-        return Response([result.data for result in results], status=status.HTTP_200_OK)
+        return Response(
+            [pagination.get_paginated_response(result.data) for result in results],
+            status=status.HTTP_200_OK,
+        )
