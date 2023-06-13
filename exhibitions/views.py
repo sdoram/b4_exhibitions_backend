@@ -62,7 +62,11 @@ class ExhibitionDetailView(APIView):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
         # query_params를 serializer로 전달
         serializer = ExhibitionDetailSerializer(
-            exhibition, context={"select": request.query_params.get("select", None)}
+            exhibition,
+            context={
+                "select": request.query_params.get("select", None),
+                "request": request,
+            },
         )
         return Response(serializer.data)
 
