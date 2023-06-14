@@ -42,7 +42,7 @@ class ExhibitionDetailSerializer(serializers.ModelSerializer):
         pagination = CustomPageNumberPagination()
         # query_params
         select = self.context["select"]
-        # select에 따라 filed 추가
+        # select에 따라 field 추가
         if select == "accompanies":
             accompany = instance.accompanies.all()
             paginated_accompanies = pagination.paginate_queryset(
@@ -51,8 +51,7 @@ class ExhibitionDetailSerializer(serializers.ModelSerializer):
             serializer = AccompanySerializer(paginated_accompanies, many=True)
             data["accompanies"] = pagination.get_paginated_response(serializer.data)
         else:
-            # related_name 설정 필요
-            reviews = instance.review_set.all()
+            reviews = instance.exhibition_reviews.all()
             paginated_reviews = pagination.paginate_queryset(
                 reviews, self.context["request"]
             )
