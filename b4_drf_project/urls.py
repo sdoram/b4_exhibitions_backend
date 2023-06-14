@@ -8,6 +8,8 @@ urlpatterns = [
     path("api/exhibitions/", include("exhibitions.urls")),
     path("api/reviews/", include("reviews.urls")),
     path("api/users/", include("users.urls")),
+    path("api/user/", include("allauth.urls")),
+    path("api/user/", include("dj_rest_auth.urls")),
     path("admin/", admin.site.urls),
 ]
 

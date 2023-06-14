@@ -3,32 +3,32 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, nickname, password=None):
+    def create_user(self, email, username, password=None):
         """
         요청 받은 사용자 이메일, 사용자 닉네임, 비밀번호로 사용자를 생성하여 저장합니다.
         """
         if not email:
             raise ValueError("사용자 이메일은 필수입력 사항입니다.")
 
-        if not nickname:
+        if not username:
             raise ValueError("사용자 닉네임은 필수입력 사항입니다.")
 
         user = self.model(
             email=self.normalize_email(email),
-            nickname=nickname,
+            username=username,
         )
 
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, nickname, password=None):
+    def create_superuser(self, email, username, password=None):
         """
         요청받은 사용자 이메일, 사용자 닉네임, 비밀번호로 수퍼유저를 생성하여 저장합니다.
         """
         user = self.create_user(
             email=email,
-            nickname=nickname,
+            username=username,
             password=password,
         )
         user.is_admin = True
@@ -43,7 +43,9 @@ class User(AbstractBaseUser):
         unique=True,
     )
 
-    nickname = models.CharField(max_length=100, unique=True, verbose_name="사용자 닉네임")
+    username = models.CharField(
+        blank=True, null=True, max_length=100, unique=True, verbose_name="사용자 닉네임"
+    )
     password = models.CharField(max_length=255, verbose_name="비밀번호")
 
     GENDER_CHOICES = [
@@ -54,11 +56,12 @@ class User(AbstractBaseUser):
     gender = models.CharField(
         max_length=10,
         choices=GENDER_CHOICES,
-        blank=False,
+        blank=True,
+        null=True,
         error_messages="필수 입력 값입니다.",
         verbose_name="성별",
     )
-    age = models.PositiveIntegerField(null=True, verbose_name="사용자 나이")
+    age = models.PositiveIntegerField(blank=True, null=True, verbose_name="사용자 나이")
     bio = models.TextField(blank=True, null=True, verbose_name="사용자 자기소개")
     profile_image = models.ImageField(
         upload_to="profile-images/", blank=True, null=True, verbose_name="사용자 프로필이미지"
@@ -72,10 +75,10 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = "email"  # 이걸로 로그인 하겠다 하는 필드. 들어가는 값은 unique=True 속성.
-    REQUIRED_FIELDS = ["nickname"]  # createsuperuser할때 어떤 필드들을 작성받을 지 적는 필드.
+    REQUIRED_FIELDS = ["username"]  # createsuperuser할때 어떤 필드들을 작성받을 지 적는 필드.
 
     def __str__(self):
-        return self.nickname
+        return self.username
 
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
