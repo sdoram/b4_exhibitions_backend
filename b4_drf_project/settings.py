@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     "corsheaders",
     "accompanies",
     "exhibitions",
@@ -45,9 +46,19 @@ INSTALLED_APPS = [
     "reviews",
     "rest_framework_simplejwt",
     "rest_framework",
+    "rest_framework.authtoken",
+    # dj-rest-auth
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
+    # django-allauth
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
 ]
 
 REST_FRAMEWORK = {
+    # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
@@ -180,3 +191,12 @@ SIMPLE_JWT = {
 
 # 커스텀 유저 모델을 사용하기 위해 auth를 users.User로 바꾸었다.
 AUTH_USER_MODEL = "users.User"
+
+SITE_ID = 4
+
+REST_USE_JWT = True
+
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # username 필드 사용 x
+ACCOUNT_EMAIL_REQUIRED = True  # email 필드 사용 o
+# ACCOUNT_USERNAME_REQUIRED = False  # username 필드 사용 x
+ACCOUNT_AUTHENTICATION_METHOD = "email"
