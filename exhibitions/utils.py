@@ -8,11 +8,11 @@ with open("exhibitions/utils.json", "r", encoding="UTF-8") as f:
 # 선택한 필드만 가져오기
 selected_fields = [
     "svcnm",
-    "category",
     "minclassnm",
     "imgurl",
     "placenm",
     "dtlcont",
+    "svcurl",
     "svcopnbgndt",
     "svcopnenddt",
 ]
@@ -31,6 +31,7 @@ for data in utils["DATA"]:
     new_data["fields"]["content"] = data["dtlcont"]
     new_data["fields"]["created_at"] = datetime.now().isoformat()
     new_data["fields"]["updated_at"] = datetime.now().isoformat()
+    new_data["fields"]["direct_url"] = data["svcurl"]
     if data[
         "svcopnbgndt"
     ]:  # "svcopnbgndt":1676300400000 시작일이 이렇게 불러와져서 데이터에 저장이 안됨 -> 1000으로 나눠주고 datetime으로 변환
