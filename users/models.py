@@ -65,6 +65,15 @@ class User(AbstractBaseUser):
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="사용자 계정 생성일")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="사용자 정보 마지막 수정일")
+    SIGNIN_TYPES = [
+        ("normal", "일반"),
+        ("google", "구글"),
+        ("naver", "네이버"),
+        ("kakao", "카카오"),
+    ]
+    signin_type = models.CharField(
+        "로그인유형", max_length=10, choices=SIGNIN_TYPES, default="normal"
+    )
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
