@@ -13,4 +13,5 @@ urlpatterns = [
     path("", views.UserDetailView.as_view(), name="user-update-and-delete"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
     path("<int:user_id>/", views.UserMypageView.as_view(), name="user-mypage"),
+    path("google/", views.GoogleSignin.as_view(), name="google-signin"),
 ]
