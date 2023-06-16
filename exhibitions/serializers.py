@@ -7,6 +7,8 @@ from .paginations import CustomPageNumberPagination
 
 
 class ExhibitionSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField()
+
     class Meta:
         model = Exhibition
         fields = [
@@ -21,6 +23,7 @@ class ExhibitionSerializer(serializers.ModelSerializer):
             "category",
             "start_date",
             "end_date",
+            "likes",
         ]
 
     def get_likes(self, obj):
@@ -34,6 +37,8 @@ class ExhibitionSerializer(serializers.ModelSerializer):
 
 class ExhibitionDetailSerializer(serializers.ModelSerializer):
     """전시회 상세보기"""
+
+    likes = serializers.SerializerMethodField()
 
     # 읽기 전용 직렬화
     def to_representation(self, instance):
@@ -62,3 +67,6 @@ class ExhibitionDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Exhibition
         exclude = []
+
+    def get_likes(self, obj):
+        return obj.likes.count()
