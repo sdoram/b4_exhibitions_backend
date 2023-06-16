@@ -15,7 +15,6 @@ class ExhibitionSerializer(serializers.ModelSerializer):
             "id",
             "user_id",
             "info_name",
-            "content",
             "location",
             "image",
             "created_at",
@@ -44,6 +43,7 @@ class ExhibitionDetailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         # serializer.data
         data = super().to_representation(instance)
+        data["recommend"] = self.context["recommend"]
         pagination = CustomPageNumberPagination()
         # query_params
         select = self.context["select"]

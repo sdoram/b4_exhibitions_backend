@@ -15,6 +15,7 @@ from .serializers import (
     ExhibitionSerializer,
     ExhibitionDetailSerializer,
 )
+from .recommend_ml import recommendation
 
 
 class ExhibitionView(APIView):
@@ -65,12 +66,16 @@ class ExhibitionDetailView(APIView):
 
     def get(self, request, exhibition_id):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
+        recommend = [
+            get_object_or_404(Exhibition, id=id) for id in recommendation(exhibition_id)
+        ]
         # query_params를 serializer로 전달
         serializer = ExhibitionDetailSerializer(
             exhibition,
             context={
                 "select": request.query_params.get("select", None),
                 "request": request,
+                "recommend": ExhibitionSerializer(recommend, many=True).data,
             },
         )
         return Response(serializer.data)
@@ -104,7 +109,6 @@ class ExhibitionLikeView(APIView):  # 좋아요 기능
                 {"message": "좋아요 취소", "likes": exhibition.likes.count()},
                 status=status.HTTP_200_OK,
             )
-
 
 class ExhibitionSearchView(APIView):
     def get(self, request):
