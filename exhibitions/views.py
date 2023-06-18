@@ -15,23 +15,26 @@ from .serializers import (
     ExhibitionSerializer,
     ExhibitionDetailSerializer,
 )
+
 from .recommend_ml import recommendation
+from django.db.models.query_utils import Q
+import datetime
 
 
 class ExhibitionView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]  # 인증된 사용자, 인증되지 않은 사용자 모두 읽기 가능
 
     def get(self, request):  # 전시회 목록 불러오기
+        q = Q()
+        today = datetime.date.today()
         # 카테고리 정보 가져오기
         category = request.query_params.get("category", None)
-        # 카테고리 정보 존재 시
         if category:
-            exhibitions = Exhibition.objects.filter(
-                # category에 params value가 포함된 전시회 정보
-                category__icontains=category
-            ).order_by("-created_at")
-        else:
-            exhibitions = Exhibition.objects.order_by("-created_at")
+            q.add(Q(category__icontains=category), q.OR)
+        # 현재 날짜 기준으로 예약 가능한 전시회만 보여주기
+        q.add(Q(start_date__lte=today), q.AND)
+        q.add(Q(end_date__gte=today), q.AND)
+        exhibitions = Exhibition.objects.filter(q).order_by("end_date")
         # 페이지네이션 class 객체 생성
         pagination = PageNumberPagination()
         # 페이지네이션 진행
@@ -109,6 +112,7 @@ class ExhibitionLikeView(APIView):  # 좋아요 기능
                 {"message": "좋아요 취소", "likes": exhibition.likes.count()},
                 status=status.HTTP_200_OK,
             )
+
 
 class ExhibitionSearchView(APIView):
     def get(self, request):
