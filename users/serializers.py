@@ -38,22 +38,11 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class UserMypageSerializer(serializers.ModelSerializer):
     since_together = serializers.SerializerMethodField()
-    exhibition_likes = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = (
-            "nickname",
-            "bio",
-            "created_at",
-            "since_together",
-            "profile_image",
-            "exhibition_likes",
-        )
+        fields = ("nickname", "bio", "created_at", "since_together", "profile_image")
 
     def get_since_together(self, request_user):
         calculate = date.today() - request_user.created_at.date()
         return calculate.days
-
-    def get_exhibition_likes(self, obj):
-        return list(obj.exhibition_likes.values())
