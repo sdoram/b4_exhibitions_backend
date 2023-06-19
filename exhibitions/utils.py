@@ -15,6 +15,7 @@ selected_fields = [
     "svcurl",
     "svcopnbgndt",
     "svcopnenddt",
+    "svcstatnm",
 ]
 
 # 필요한 데이터만 가져오기
@@ -32,6 +33,7 @@ for data in utils["DATA"]:
     new_data["fields"]["created_at"] = datetime.now().isoformat()
     new_data["fields"]["updated_at"] = datetime.now().isoformat()
     new_data["fields"]["direct_url"] = data["svcurl"]
+    new_data["fields"]["svstatus"] = data["svcstatnm"]
     if data[
         "svcopnbgndt"
     ]:  # "svcopnbgndt":1676300400000 시작일이 이렇게 불러와져서 데이터에 저장이 안됨 -> 1000으로 나눠주고 datetime으로 변환
