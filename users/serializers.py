@@ -48,6 +48,7 @@ class UserMypageSerializer(serializers.ModelSerializer):
             "created_at",
             "since_together",
             "profile_image",
+            "gender",
             "exhibition_likes",
         )
 
