@@ -20,7 +20,6 @@ cur.execute(
 )
 cols = [column[0] for column in cur.description]
 exhibition_df = pd.DataFrame.from_records(data=cur.fetchall(), columns=cols)
-
 con.close()  # 데이터베이스 연결 종료
 
 # info_name별 유사도 측정
@@ -60,6 +59,3 @@ def recommendation(id, top_n=10):
     )
 
     return ml_recommend_exhibitions_id_list
-
-
-recommendation(5568)
