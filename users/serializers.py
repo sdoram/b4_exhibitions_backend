@@ -41,7 +41,14 @@ class UserMypageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("nickname", "bio", "created_at", "since_together", "profile_image")
+        fields = (
+            "nickname",
+            "bio",
+            "created_at",
+            "since_together",
+            "profile_image",
+            "gender",
+        )
 
     def get_since_together(self, request_user):
         calculate = date.today() - request_user.created_at.date()

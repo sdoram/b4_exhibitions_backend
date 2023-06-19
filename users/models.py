@@ -16,6 +16,7 @@ class UserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             nickname=nickname,
+            gender="밝히고 싶지 않음",
         )
 
         user.set_password(password)
