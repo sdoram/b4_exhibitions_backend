@@ -2,7 +2,11 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from users.models import User
+from rest_framework.generics import get_object_or_404
+from exhibitions.serializers import ExhibitionSerializer
+from exhibitions.models import Exhibition
 from datetime import datetime, date
+from django.db.models import Count
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -57,4 +61,11 @@ class UserMypageSerializer(serializers.ModelSerializer):
         return calculate.days
 
     def get_exhibition_likes(self, obj):
-        return list(obj.exhibition_likes.values())
+        # 유저가 좋아요 누른 전시회 id 가져오기
+        exhibition_likes_list = [value["id"] for value in obj.exhibition_likes.values()]
+
+        return [
+            # 가져온 id를 바탕으로 serializer 진행
+            ExhibitionSerializer(get_object_or_404(Exhibition, id=exhibition_id)).data
+            for exhibition_id in exhibition_likes_list
+        ]
