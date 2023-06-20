@@ -68,3 +68,11 @@ class UserViewTest(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # ------------------------회원탈퇴 테스트------------------------
+    def test_user_delete(self):
+        response = self.client.delete(
+            path=reverse("users:user-update-and-delete"),
+            HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
+        )
+        self.assertEqual(response.data, {"message": "탈퇴되었습니다."})
