@@ -19,8 +19,8 @@ class SignupViewTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
-# ------------------------유저 테스트------------------------
-class UserViewTest(APITestCase):
+# ------------------------로그인 테스트------------------------
+class SigninViewTest(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email="test@test.com",
