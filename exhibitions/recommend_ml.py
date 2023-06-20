@@ -16,7 +16,7 @@ con = psycopg2.connect(
 )
 cur = con.cursor()
 cur.execute(
-    "SELECT id, info_name, location, category, start_date, end_date From exhibitions_exhibition"
+    "SELECT id, info_name, location, category, start_date, end_date, svstatus From exhibitions_exhibition"
 )
 cols = [column[0] for column in cur.description]
 exhibition_df = pd.DataFrame.from_records(data=cur.fetchall(), columns=cols)
@@ -51,6 +51,7 @@ def recommendation(id, top_n=10):
     # 필터링 된 데이터프레임의 유사도 내림차순 정렬 후 상위 index 추출
     temp = filterd_exhibition_df.sort_values(by=["similarity"], ascending=False)
     temp = temp[temp.index.values != target_index]  # 자기 자신 제거
+    temp = temp[temp["svstatus"] == "접수중"]  # svstatus가 접수중인 데이터만 추출하기
 
     final_index = temp.index.values[:top_n]
     raw_exhibitions = filterd_exhibition_df.loc[final_index]
