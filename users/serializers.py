@@ -12,7 +12,7 @@ from django.db.models import Count
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        exclude = ["is_active"]
 
     def create(self, validated_data):
         user = super().create(validated_data)
