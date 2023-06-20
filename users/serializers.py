@@ -58,7 +58,7 @@ class UserMypageSerializer(serializers.ModelSerializer):
 
     def get_since_together(self, request_user):
         calculate = date.today() - request_user.created_at.date()
-        return calculate.days
+        return calculate.days + 1
 
     def get_exhibition_likes(self, obj):
         # 유저가 좋아요 누른 전시회 id 가져오기
