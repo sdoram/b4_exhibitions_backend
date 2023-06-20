@@ -76,3 +76,11 @@ class UserViewTest(APITestCase):
             HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
         )
         self.assertEqual(response.data, {"message": "탈퇴되었습니다."})
+
+
+# ------------------------소셜(구글)로그인 테스트------------------------
+class GoogleSigninTest(APITestCase):
+    def test_get_goolge(self):
+        url = reverse("users:google-signin")
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
