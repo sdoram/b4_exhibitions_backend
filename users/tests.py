@@ -29,7 +29,6 @@ class SigninViewTest(APITestCase):
         )
         self.user.save()
 
-    # ------------------------로그인 테스트------------------------
     def test_login(self):
         url = reverse("users:user-signin")
         login_data = {"email": "test@test.com", "password": "123"}
