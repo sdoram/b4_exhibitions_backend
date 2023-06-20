@@ -35,3 +35,27 @@ class SigninViewTest(APITestCase):
         login_data = {"email": "test@test.com", "password": "123"}
         response = self.client.post(url, login_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+# ------------------------유저 테스트------------------------
+class UserViewTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user_data = {
+            "email": "test@test.com",
+            "nickname": "testuser",
+            "password": "123",
+        }
+        cls.user = User.objects.create_user(**cls.user_data)
+
+    def setUp(self):
+        self.access_token = self.client.post(
+            reverse("users:user-signin"), self.user_data
+        ).data["access"]
+
+    # ------------------------마이페이지 테스트------------------------
+    def test_mypage(self):
+        user_id = self.user.id
+        url = reverse("users:user-mypage", kwargs={"user_id": user_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
