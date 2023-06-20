@@ -47,9 +47,7 @@ class UserDetailView(APIView):
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(
-                {"message": "회원 정보가 수정되었습니다."}, status=status.HTTP_201_CREATED
-            )
+            return Response({"message": "회원 정보가 수정되었습니다."}, status=status.HTTP_200_OK)
         else:
             return Response(
                 {"message": f"${serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST
