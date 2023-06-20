@@ -34,6 +34,7 @@ class ExhibitionView(APIView):
         # 현재 날짜 기준으로 예약 가능한 전시회만 보여주기
         q.add(Q(start_date__lte=today), q.AND)
         q.add(Q(end_date__gte=today), q.AND)
+        q.add(Q(svstatus="접수중"), q.AND)
         exhibitions = Exhibition.objects.filter(q).order_by("end_date")
         # 페이지네이션 class 객체 생성
         pagination = PageNumberPagination()
