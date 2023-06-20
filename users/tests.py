@@ -58,3 +58,13 @@ class UserViewTest(APITestCase):
         url = reverse("users:user-mypage", kwargs={"user_id": user_id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # ------------------------회원수정 테스트------------------------
+    def test_user_update(self):
+        update_data = {"nickname": "goodman", "bio": "안녕하세요 테스트 중입니다"}
+        response = self.client.patch(
+            path=reverse("users:user-update-and-delete"),
+            data=update_data,
+            HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
