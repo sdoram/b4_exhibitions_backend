@@ -50,7 +50,8 @@ class ExhibitionView(APIView):
             if serializer.is_valid():
                 serializer.save(user=request.user)
                 return Response(
-                    {"message": "게시글이 등록되었습니다."}, status=status.HTTP_201_CREATED
+                    {"message": "게시글이 등록되었습니다.", "data": serializer.data},
+                    status=status.HTTP_201_CREATED,
                 )
             else:
                 return Response(

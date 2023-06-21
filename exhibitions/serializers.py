@@ -25,7 +25,13 @@ class ExhibitionSerializer(serializers.ModelSerializer):
             "svstatus",
             "likes",
             "direct_url",
+            "content",
         ]
+        extra_kwargs = {
+            "content": {
+                "write_only": True,
+            },
+        }
 
     def get_likes(self, obj):
         return obj.likes.count()
