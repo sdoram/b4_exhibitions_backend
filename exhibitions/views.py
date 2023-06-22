@@ -130,32 +130,17 @@ class ExhibitionSearchView(APIView):
         pagination = CustomPageNumberPagination()
         # 키워드가 있는 경우
         if search:
-            # 전시회 내용 or 제목으로 검색
+            # 내용, 제목, 장소 기준으로 검색
             exhibitions = Exhibition.objects.filter(
-                content__icontains=search
-            ) | Exhibition.objects.filter(info_name__icontains=search).order_by(
-                "-created_at"
-            )
-            reviews = Review.objects.filter(content__icontains=search).order_by(
-                "-created_at"
-            )
-            accompanies = Accompany.objects.filter(content__icontains=search).order_by(
-                "-created_at"
-            )
+                Q(content__icontains=search)
+                | Q(info_name__icontains=search)
+                | Q(location__icontains=search)
+            ).order_by("-created_at")
         else:
             exhibitions = Exhibition.objects.all().order_by("-created_at")
-            reviews = Review.objects.all().order_by("-created_at")
-            accompanies = Accompany.objects.all().order_by("-created_at")
         paginated_exhibitions = pagination.paginate_queryset(exhibitions, request)
-        paginated_reviews = pagination.paginate_queryset(reviews, request)
-        paginated_accompanies = pagination.paginate_queryset(accompanies, request)
-        results = (
-            ExhibitionSerializer(paginated_exhibitions, many=True),
-            ReviewSerializer(paginated_reviews, many=True),
-            AccompanySerializer(paginated_accompanies, many=True),
-        )
-        # serializer.data의 리스트를 Response로 보내주기
+        serializer = ExhibitionSerializer(paginated_exhibitions, many=True)
         return Response(
-            [pagination.get_paginated_response(result.data) for result in results],
+            pagination.get_paginated_response(serializer.data),
             status=status.HTTP_200_OK,
         )
