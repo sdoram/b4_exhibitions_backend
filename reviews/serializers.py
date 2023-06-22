@@ -3,11 +3,15 @@ from .models import Review
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    nickname = serializers.SerializerMethodField()
+    user_id = serializers.SerializerMethodField()
+
     class Meta:
         model = Review
         fields = [
             "id",
             "user_id",
+            "nickname",
             "exhibition_id",
             "content",
             "rating",
@@ -15,6 +19,12 @@ class ReviewSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
+
+    def get_nickname(self, obj):
+        return obj.user.nickname
+
+    def get_user_id(self, obj):
+        return obj.user.id
 
 
 class ReviewCreateSerializer(serializers.ModelSerializer):
