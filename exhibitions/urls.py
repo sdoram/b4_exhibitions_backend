@@ -1,11 +1,10 @@
 from django.urls import path
-from exhibitions import views
+from exhibitions import views, seoulweather
 
 app_name = "exhibitions"
 
 urlpatterns = [
     path("", views.ExhibitionView.as_view(), name="exhibition"),
-
     path("search/", views.ExhibitionSearchView.as_view(), name="search"),
     path(
         "<int:exhibition_id>/",
@@ -17,4 +16,5 @@ urlpatterns = [
         views.ExhibitionLikeView.as_view(),
         name="exhibition-like",
     ),
+    path("weather/", seoulweather.get_weather, name="get_seoul_weather"),
 ]
