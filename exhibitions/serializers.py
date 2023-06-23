@@ -57,14 +57,14 @@ class ExhibitionDetailSerializer(serializers.ModelSerializer):
         select = self.context["select"]
         # select에 따라 field 추가
         if select == "accompanies":
-            accompany = instance.accompanies.all()
+            accompany = instance.accompanies.all().order_by("-updated_at")
             paginated_accompanies = pagination.paginate_queryset(
                 accompany, self.context["request"]
             )
             serializer = AccompanySerializer(paginated_accompanies, many=True)
             data["accompanies"] = pagination.get_paginated_response(serializer.data)
         else:
-            reviews = instance.exhibition_reviews.all()
+            reviews = instance.exhibition_reviews.all().order_by("-updated_at")
             paginated_reviews = pagination.paginate_queryset(
                 reviews, self.context["request"]
             )
