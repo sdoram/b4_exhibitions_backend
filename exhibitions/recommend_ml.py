@@ -7,7 +7,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 # 특정 정보와 서비스명 유사도가 높은 서비스 정보를 얻기 위한 함수
-def recommendation(id, top_n=10):
+def recommendation(id, top_n=5):
     # 데이터베이스 연결
     con = psycopg2.connect(
         host=os.environ.get("DB_HOST"),
@@ -30,6 +30,7 @@ def recommendation(id, top_n=10):
 
     # 유사도 행렬 생성
     info_name_sim = cosine_similarity(info_name_mat, info_name_mat)
+
     # 입력한 정보의 index
     target_info_name = exhibition_df[exhibition_df["id"] == id]
     target_index = target_info_name.index.values
