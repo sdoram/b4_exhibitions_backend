@@ -9,9 +9,14 @@ class ApplyCreateSerializer(serializers.ModelSerializer):
 
 
 class ApplySerializer(serializers.ModelSerializer):
+    nickname = serializers.SerializerMethodField()
+
     class Meta:
         model = Apply
         fields = "__all__"
+
+    def get_nickname(self, obj):
+        return obj.user.nickname
 
 
 class AccompanyCreateSerializer(serializers.ModelSerializer):
@@ -22,7 +27,11 @@ class AccompanyCreateSerializer(serializers.ModelSerializer):
 
 class AccompanySerializer(serializers.ModelSerializer):
     applies = ApplySerializer(many=True)
+    nickname = serializers.SerializerMethodField()
 
     class Meta:
         model = Accompany
         fields = "__all__"
+
+    def get_nickname(self, obj):
+        return obj.user.nickname
