@@ -42,7 +42,7 @@ class ReviewDetailView(APIView):
     def put(self, request, review_id):
         review = get_object_or_404(Review, id=review_id)
         if request.user == review.user:
-            serializer = ReviewSerializer(review, data=request.data)
+            serializer = ReviewSerializer(review, data=request.data, partial=True)
             if serializer.is_valid(raise_exception=True):
                 serializer.save()
                 return Response(
