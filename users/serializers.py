@@ -37,6 +37,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["email"] = user.email
         token["is_admin"] = user.is_admin
         token["nickname"] = user.nickname
+        token["signin_type"] = user.signin_type
         return token
 
 
