@@ -5,9 +5,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from accompanies.models import Accompany, Apply
 from accompanies.serializers import (
-    AccompanyCreateSerializer,
     AccompanySerializer,
-    ApplyCreateSerializer,
+    AccompanyCreateSerializer,
+    ApplySerializer,
 )
 from exhibitions.models import Exhibition
 
@@ -46,7 +46,7 @@ class AccompanyView(APIView):
         """
         serializer = AccompanyCreateSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user, exhibition_id=exhibition_id)
+            serializer.save(exhibition_id=exhibition_id, user=request.user)
             return Response(
                 {"message": "동행 구하기 글이 등록되었습니다.", "data": serializer.data},
                 status=status.HTTP_201_CREATED,
@@ -125,7 +125,7 @@ class ApplyView(APIView):
             HTTP_400_BAD_REQUEST : 값이 제대로 입력되지 않음\n
             HTTP_401_UNAUTHORIZED : 로그인 하지 않은 사용자
         """
-        serializer = ApplyCreateSerializer(data=request.data)
+        serializer = ApplySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user, accompany_id=accompany_id)
             return Response(
@@ -151,7 +151,7 @@ class ApplyView(APIView):
         """
         apply = get_object_or_404(Apply, id=apply_id)
         if request.user == apply.user:
-            serializer = ApplyCreateSerializer(apply, data=request.data)
+            serializer = ApplySerializer(apply, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(

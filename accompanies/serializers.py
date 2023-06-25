@@ -2,14 +2,10 @@ from rest_framework import serializers
 from accompanies.models import Accompany, Apply
 
 
-class ApplyCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Apply
-        fields = ("content",)
-
-
 class ApplySerializer(serializers.ModelSerializer):
     nickname = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
+    accompany = serializers.SerializerMethodField()
 
     class Meta:
         model = Apply
@@ -18,11 +14,40 @@ class ApplySerializer(serializers.ModelSerializer):
     def get_nickname(self, obj):
         return obj.user.nickname
 
+    def get_user(self, obj):
+        return obj.user.id
+
+    def get_accompany(self, obj):
+        return obj.accompany.id
+
 
 class AccompanyCreateSerializer(serializers.ModelSerializer):
+    nickname = serializers.SerializerMethodField()
+    user = serializers.SerializerMethodField()
+
     class Meta:
         model = Accompany
-        fields = ("content", "personnel", "start_time", "end_time")
+        fields = (
+            "id",
+            "user",
+            "nickname",
+            "content",
+            "personnel",
+            "start_time",
+            "end_time",
+            "updated_at",
+        )
+
+    read_only_fields = (
+        "nickname",
+        "updated_at",
+    )
+
+    def get_nickname(self, obj):
+        return obj.user.nickname
+
+    def get_user(self, obj):
+        return obj.user.id
 
 
 class AccompanySerializer(serializers.ModelSerializer):
