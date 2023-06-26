@@ -43,6 +43,13 @@ class AccompanyCreateSerializer(serializers.ModelSerializer):
         "updated_at",
     )
 
+    def validate(self, data):
+        if data["start_time"] > data["end_time"]:
+            raise serializers.ValidationError("종료시간은 시작시간보다 빠를 수 없습니다.")
+        if data["personnel"] == 0:
+            raise serializers.ValidationError("목표인원을 1명 이상 선택하십시오.")
+        return data
+
     def get_nickname(self, obj):
         return obj.user.nickname
 
