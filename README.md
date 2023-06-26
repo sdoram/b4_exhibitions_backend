@@ -4,19 +4,16 @@ DRF를 기반으로 Machine Learning 기능을 추가한 각종 전시 및 체�
 <br>
 
 ## 🖥️ 프로젝트 소개 - <a href="https://www.notion.so/S-A-d04b7899646e45e59da17fbec7cdacfb">S.A. 바로가기!</a>
-------
 지금은 전시상황! 프로젝트는 서울 공공서비스 체험, 전시, 그리고 다양한 활동들을 한 눈에 볼 수 있는 웹사이트입니다. 추천 기능을 통해 현재 보고 있는 활동과 비슷한 활동을 추천 받을 수 있고, 해당 활동에 대한 후기를 확인할 수 있습니다. 또한 댓글을 통해 다양한 활동을 함께 할 친구를 구할 수 있는 공간이 마련되어 있습니다.
 <br>
 <br>
 
 ## 🕰️ 개발 기간
-------
 * 23.06.05 - 23.06.30
 <br>
 <br>
 
 ## 🧑‍🤝‍🧑 팀원 구성 및 역할 분담
-------
 - 팀장😄 <a href="https://github.com/sdoram">김세만</a><br>
 [BE] 페이지네이션(전시 전체, 리뷰, 동행구하기), 검색 기능   
 [FE] js 연결(메인, 백오피스 메인, 로그인, 회원가입, 회원정보 조회 및 수정, 회원탈퇴)
@@ -34,7 +31,6 @@ DRF를 기반으로 Machine Learning 기능을 추가한 각종 전시 및 체�
 <br>
 
 ## ⚙️ 개발 환경 (Tech Stack)
-------
 - **Language** : `Python 3.8.10`
 - **IDE** : `Visual Studio Code`
 - **Framework** : `Django-Rest-Framework 3.14.0`
@@ -44,37 +40,23 @@ DRF를 기반으로 Machine Learning 기능을 추가한 각종 전시 및 체�
 
 ### <b>🦊 BE 😼</b>
 
-<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white">
-<img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white">
-<img src="https://img.shields.io/badge/postgresql-4169E1?style=for-the-badge&logo=postgresql&logoColor=white">
-<img src="https://img.shields.io/badge/dotenv-ECD53F?style=for-the-badge&logo=dotenv&logoColor=white">
-<img src="https://img.shields.io/badge/scikitlearn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white"/>
-<img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white"/>
+<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"> <img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white"> <img src="https://img.shields.io/badge/postgresql-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"> <img src="https://img.shields.io/badge/dotenv-ECD53F?style=for-the-badge&logo=dotenv&logoColor=white"> <img src="https://img.shields.io/badge/scikitlearn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white"/> <img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white"/>
 <br>
 <br>
 
 ### <b>😈 FE 👽</b>
 
-<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
-<img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
-<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"> <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"> <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
 <br>
 <br>
 
 ### <b>🦝ETC🦄</b>
 
-<img src="https://img.shields.io/badge/visualstudiocode-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/>
-<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
-<img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/>
-<img src="https://img.shields.io/badge/gunicorn-499848?style=for-the-badge&logo=gunicorn&logoColor=white">
-<img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white"/>
-<img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/>
-<img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"/>
+<img src="https://img.shields.io/badge/visualstudiocode-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/> <img src="https://img.shields.io/badge/gunicorn-499848?style=for-the-badge&logo=gunicorn&logoColor=white"> <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white"/> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"/>
 <br>
 <br>
 
 ## 🔑 프로젝트 설치 및 실행 방법
-------
 #### 깃허브 클론하기
 ```bash
 $ git init
@@ -125,7 +107,6 @@ $ index.html에서 마우스 우클릭 후 Open with Live Server 클릭(단축�
 <br>
 
 ## 📌 주요 기능
-------
 #### 로그인 
 - DB값 검증
 - 로그인 시 JWT Token 생성
