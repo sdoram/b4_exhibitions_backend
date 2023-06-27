@@ -26,13 +26,12 @@ class ReviewView(APIView):
             )
 
         serializer = ReviewSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(exhibition_id=exhibition_id, user=request.user)
-            return Response(
-                {"message": "리뷰가 등록되었습니다.", "data": serializer.data},
-                status=status.HTTP_201_CREATED,
-            )
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(exhibition_id=exhibition_id, user=request.user)
+        return Response(
+            {"message": "리뷰가 등록되었습니다.", "data": serializer.data},
+            status=status.HTTP_201_CREATED,
+        )
 
 
 class ReviewDetailView(APIView):
@@ -41,14 +40,12 @@ class ReviewDetailView(APIView):
         review = get_object_or_404(Review, id=review_id)
         if request.user == review.user:
             serializer = ReviewSerializer(review, data=request.data, partial=True)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return Response(
-                    {"message": "리뷰가 수정되었습니다.", "data": serializer.data},
-                    status=status.HTTP_200_OK,
-                )
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(
+                {"message": "리뷰가 수정되었습니다.", "data": serializer.data},
+                status=status.HTTP_200_OK,
+            )
         else:
             return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
 
