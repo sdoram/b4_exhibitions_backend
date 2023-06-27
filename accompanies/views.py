@@ -45,17 +45,12 @@ class AccompanyView(APIView):
             HTTP_401_UNAUTHORIZED : 로그인 하지 않은 사용자
         """
         serializer = AccompanyCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(exhibition_id=exhibition_id, user=request.user)
-            return Response(
-                {"message": "동행 구하기 글이 등록되었습니다.", "data": serializer.data},
-                status=status.HTTP_201_CREATED,
-            )
-        else:
-            return Response(
-                {"message": "요청이 올바르지 않습니다.", "errors": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(exhibition_id=exhibition_id, user=request.user)
+        return Response(
+            {"message": "동행 구하기 글이 등록되었습니다.", "data": serializer.data},
+            status=status.HTTP_201_CREATED,
+        )
 
     def put(self, request, accompany_id):
         """동행 구하기 댓글 수정하기\n
@@ -76,20 +71,15 @@ class AccompanyView(APIView):
             serializer = AccompanyCreateSerializer(
                 accompany, data=request.data, partial=True
             )
-            if serializer.is_valid():
-                serializer.save()
-                return Response(
-                    {"message": "동행 구하기 글이 수정되었습니다.", "data": serializer.data},
-                    status=status.HTTP_200_OK,
-                )
-            else:
-                return Response(
-                    {"message": "요청이 올바르지 않습니다.", "errors": serializer.errors},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(
+                {"message": "동행 구하기 글이 수정되었습니다.", "data": serializer.data},
+                status=status.HTTP_200_OK,
+            )
         else:
             return Response(
-                {"message": "권한이 없습니다.", "errors": serializer.errors},
+                {"message": "권한이 없습니다."},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
@@ -126,17 +116,12 @@ class ApplyView(APIView):
             HTTP_401_UNAUTHORIZED : 로그인 하지 않은 사용자
         """
         serializer = ApplySerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user, accompany_id=accompany_id)
-            return Response(
-                {"message": "동행 신청하기 댓글이 등록되었습니다.", "data": serializer.data},
-                status=status.HTTP_201_CREATED,
-            )
-        else:
-            return Response(
-                {"message": "요청이 올바르지 않습니다.", "errors": serializer.errors},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user, accompany_id=accompany_id)
+        return Response(
+            {"message": "동행 신청하기 댓글이 등록되었습니다.", "data": serializer.data},
+            status=status.HTTP_201_CREATED,
+        )
 
     def put(self, request, apply_id):
         """동행 신청하기 댓글 수정하기\n
@@ -152,20 +137,15 @@ class ApplyView(APIView):
         apply = get_object_or_404(Apply, id=apply_id)
         if request.user == apply.user:
             serializer = ApplySerializer(apply, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(
-                    {"message": "동행 신청하기 댓글이 수정되었습니다.", "data": serializer.data},
-                    status=status.HTTP_200_OK,
-                )
-            else:
-                return Response(
-                    {"message": "요청이 올바르지 않습니다.", "errors": serializer.errors},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(
+                {"message": "동행 신청하기 댓글이 수정되었습니다.", "data": serializer.data},
+                status=status.HTTP_200_OK,
+            )
         else:
             return Response(
-                {"message": "권한이 없습니다.", "errors": serializer.errors},
+                {"message": "권한이 없습니다."},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
