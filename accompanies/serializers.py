@@ -21,6 +21,9 @@ class ApplySerializer(serializers.ModelSerializer):
         return obj.accompany.id
 
 
+0
+
+
 class AccompanyCreateSerializer(serializers.ModelSerializer):
     nickname = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
@@ -58,7 +61,7 @@ class AccompanyCreateSerializer(serializers.ModelSerializer):
 
 
 class AccompanySerializer(serializers.ModelSerializer):
-    applies = ApplySerializer(many=True)
+    applies = serializers.SerializerMethodField()
     nickname = serializers.SerializerMethodField()
 
     class Meta:
@@ -67,3 +70,7 @@ class AccompanySerializer(serializers.ModelSerializer):
 
     def get_nickname(self, obj):
         return obj.user.nickname
+
+    def get_applies(self, obj):
+        applies = obj.applies.all().order_by("-updated_at")
+        return ApplySerializer(applies, many=True).data
