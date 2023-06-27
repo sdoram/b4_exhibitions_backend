@@ -107,6 +107,10 @@ def SocialSiginin(**kwargs):
     try:
         user = User.objects.get(email=email)
         if signin_type == user.signin_type:
+            if user.is_active == 0:
+                return Response(
+                    {"message": "탈퇴한 계정입니다."}, status=status.HTTP_403_FORBIDDEN
+                )
             # 로그인 타입이 같으면, 토큰 발행해서 프론트로 보내주기
             refresh_token = RefreshToken.for_user(user)
             access_token = CustomTokenObtainPairSerializer.get_token(user)
