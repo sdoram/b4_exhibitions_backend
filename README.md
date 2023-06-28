@@ -9,7 +9,7 @@ DRF를 기반으로 Machine Learning 기능을 추가한 각종 전시 및 체�
 <br>
 
 ## 🕰️ 개발 기간
-* 23.06.05 - 23.06.30
+* 23.06.05 - 23.07.09
 <br>
 <br>
 
@@ -56,56 +56,6 @@ DRF를 기반으로 Machine Learning 기능을 추가한 각종 전시 및 체�
 <br>
 <br>
 
-## 🔑 프로젝트 설치 및 실행 방법
-#### 깃허브 클론하기
-```bash
-$ git init
-$ git clone <레파지토리 주소>
-```
-#### 패키지 밎 라이브러리 설치
-```bash
-$ pip install -r requirements.txt
-```
-#### .env에 추가(DB 연동을 위한 작업)
-```.env
-$ DB_ENGINE="django.db.backends.postgresql"
-$ DB_NAME="데이터베이스 이름"
-$ DB_USER="유저 이름"
-$ DB_PASSWORD="비밀번호"
-$ DB_HOST="호스트 주소 또는 localhost"
-$ DB_PORT=포트번호
-```
-#### DB 연동
-```bash
-$ python manage.py makemigrations
-$ python manage.py migrate
-```
-#### 관리자 계정 생성
-```bash
-$ python manage.py createsuperuser
-```
-#### 필드 최대 길이 조정
-```sql
-$ ALTER TABLE exhibitions_exhibition ALTER COLUMN content TYPE VARCHAR (30000);
-$ ALTER TABLE exhibitions_exhibition ALTER COLUMN image TYPE VARCHAR (200);
-$ ALTER TABLE exhibitions_exhibition ALTER COLUMN direct_url TYPE VARCHAR (200);
-```
-#### 전시 데이터 DB에 저장
-```bash
-$ python manage.py loaddata exhibitions/utils_data.json
-```
-#### 백엔드 서버 실행
-```bash
-$ python manage.py runserver
-```
-#### 프론트엔드 라이브서버 실행
-```
-$ vscode 확장팩 <Live Server> 설치
-$ index.html에서 마우스 우클릭 후 Open with Live Server 클릭(단축키 Alt+L+O)
-```
-<br>
-<br>
-
 ## 📌 주요 기능
 #### 로그인 
 - DB값 검증
@@ -113,7 +63,7 @@ $ index.html에서 마우스 우클릭 후 Open with Live Server 클릭(단축�
 - 소셜 로그인(구글)
 
 #### 회원가입 
-- Email, nickname 중복방지
+- 선택 항목과 필수 항목으로 나눠짐
 
 #### 회원탈퇴
 - 회원탈퇴 시 is_active 상태가 true에서 false로 전환
@@ -134,11 +84,13 @@ $ index.html에서 마우스 우클릭 후 Open with Live Server 클릭(단축�
 - 종료된 전시는 메인페이지에서 확인할 수 없지만 검색 또는 좋아요 누른 게시글 확인 가능
 - 상세보기 클릭 시 상세페이지로 이동
 - 예약하기 클릭 시 예약페이지로 이동
+- 글 9개마다 페이지네이션 적용
 
 #### 백오피스 메인 페이지 
 - is_admin = True인 사용자가 로그인 시 백오피스 메인페이지로 연결됨
-- 수정, 삭제 가능하며 이미지 클릭 시 상세페이지로 이동함
 - 전시 등록 가능함
+- 수정, 삭제 가능하며 이미지 클릭 시 상세페이지로 이동함
+- 글 9개마다 페이지네이션 적용
 
 #### 전시 등록, 수정 및 삭제
 - 게시글 수정 시 원래 내용 불러오는 기능
@@ -146,7 +98,7 @@ $ index.html에서 마우스 우클릭 후 Open with Live Server 클릭(단축�
 - 관자리자만 등록, 수정, 삭제 가능
 
 #### 상세 페이지
-- 전시 제목, 장소, 날짜, 내용, 이미지 확인 가능
+- 전시 제목, 장소, 기간, 내용, 이미지 확인 가능
 - 우측에 해당 전시와 비슷한 전시를 추천하는 추천 바가 있음
 - 이용후기 버튼 클릭 시 후기 작성하기 버튼과 이용후기 목록 뜸
 - 동행 구해요! 버튼 클릭 시 동행구하기 버튼과 동행 구하는 글 목록이 뜸
@@ -155,15 +107,17 @@ $ index.html에서 마우스 우클릭 후 Open with Live Server 클릭(단축�
 #### 추천바
 - 현재 보고 있는 전시와 비슷한 키워드를 가진 5개의 전시를 추천함
 - 클릭 시 해당 전시의 상세페이지로 이동함
-- 제목 부분 부터 예약하기 버튼 사이에 추천바가 뜨고 스크롤이 맨 위나 예약하기 버튼 아래에 위치할 땐 추천바가 사라짐
+- 제목 부분부터 예약하기 버튼 사이에 추천바가 뜨고 스크롤이 맨 위나 예약하기 버튼 아래에 위치할 땐 추천바가 사라짐
 
 #### 이용후기
-- 이미지, 별점, 내용 작성 가능
+- 닉네임 클릭 시 해당 유저의 페이지로 이동함
+- 작성 시 이미지는 선택 사항이며, 내용을 작성하지 않거나 별점을 선택하지 않는 경우 그에 맞는 경고창을 띄움
 - 수정 시 원래 데이터를 확인할 수 있음
 - 삭제 시 "정말 삭제하시겠습니까?" 확인 창이 뜨고 확인 누르면 삭제, 취소 누르면 삭제되지 않음
 
 #### 동행 구해요!
-- 목표인원, 동행시간, 내용 작성 가능
+- 닉네임 클릭 시 해당 유저의 페이지로 이동함
+- 작성 시 목표인원, 동행시간, 내용 작성하지 않는 경우 그에 맞는 경고창을 띄움
 - 수정 시 원래 데이터를 확인할 수 있음
 - 삭제 시 "정말 삭제하시겠습니까?" 확인 창이 뜨고 확인 누르면 삭제, 취소 누르면 삭제되지 않음
 
