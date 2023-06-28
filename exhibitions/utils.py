@@ -5,19 +5,6 @@ from datetime import datetime
 with open("exhibitions/utils.json", "r", encoding="UTF-8") as f:
     utils = json.load(f)
 
-# 선택한 필드만 가져오기
-selected_fields = [
-    "svcnm",
-    "minclassnm",
-    "imgurl",
-    "placenm",
-    "dtlcont",
-    "svcurl",
-    "svcopnbgndt",
-    "svcopnenddt",
-    "svcstatnm",
-]
-
 # 필요한 데이터만 가져오기
 new_list = []
 
@@ -33,19 +20,18 @@ for data in utils["DATA"]:
     new_data["fields"]["created_at"] = datetime.now().isoformat()
     new_data["fields"]["updated_at"] = datetime.now().isoformat()
     new_data["fields"]["direct_url"] = data["svcurl"]
+    new_data["fields"]["longitude"] = data["x"]
+    new_data["fields"]["latitude"] = data["y"]
     new_data["fields"]["svstatus"] = data["svcstatnm"]
-    if data[
-        "svcopnbgndt"
-    ]:  # "svcopnbgndt":1676300400000 시작일이 이렇게 불러와져서 데이터에 저장이 안됨 -> 1000으로 나눠주고 datetime으로 변환
+
+    if data["svcopnbgndt"]:
         new_data["fields"]["start_date"] = (
             datetime.fromtimestamp(data["svcopnbgndt"] // 1000).date().isoformat()
         )
     else:
         new_data["fields"]["start_date"] = None
 
-    if data[
-        "svcopnenddt"
-    ]:  # "svcopnenddt":1676300400000 종료일이 이렇게 불러와져서 데이터에 저장이 안됨 -> 1000으로 나눠주고 datetime으로 변환
+    if data["svcopnenddt"]:
         new_data["fields"]["end_date"] = (
             datetime.fromtimestamp(data["svcopnenddt"] // 1000).date().isoformat()
         )
