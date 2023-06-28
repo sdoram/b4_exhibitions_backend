@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 
 from .models import Review
-from .serializers import ReviewSerializer, ReviewCreateSerializer
+from .serializers import ReviewSerializer
 
 
 class ReviewView(APIView):
@@ -25,12 +25,12 @@ class ReviewView(APIView):
                 {"message": "로그인이 필요합니다."}, status=status.HTTP_401_UNAUTHORIZED
             )
 
-        serializer = ReviewCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(exhibition_id=exhibition_id, user=request.user)
-            return Response({"message": "리뷰가 등록되었습니다."}, status=status.HTTP_201_CREATED)
+        serializer = ReviewSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(exhibition_id=exhibition_id, user=request.user)
         return Response(
-            {"message": "요청이 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST
+            {"message": "리뷰가 등록되었습니다.", "data": serializer.data},
+            status=status.HTTP_201_CREATED,
         )
 
 
@@ -39,12 +39,13 @@ class ReviewDetailView(APIView):
     def put(self, request, review_id):
         review = get_object_or_404(Review, id=review_id)
         if request.user == review.user:
-            serializer = ReviewCreateSerializer(review, data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
-                return Response({"message": "리뷰가 수정되었습니다."}, status=status.HTTP_200_OK)
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            serializer = ReviewSerializer(review, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(
+                {"message": "리뷰가 수정되었습니다.", "data": serializer.data},
+                status=status.HTTP_200_OK,
+            )
         else:
             return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
 

@@ -3,7 +3,6 @@ from rest_framework import serializers
 from .models import Exhibition
 from reviews.serializers import ReviewSerializer
 from accompanies.serializers import AccompanySerializer
-from .paginations import CustomPageNumberPagination
 
 
 class ExhibitionSerializer(serializers.ModelSerializer):
@@ -22,16 +21,19 @@ class ExhibitionSerializer(serializers.ModelSerializer):
             "category",
             "start_date",
             "end_date",
+            "svstatus",
             "likes",
+            "direct_url",
+            "content",
         ]
+        extra_kwargs = {
+            "content": {
+                "write_only": True,
+            },
+        }
 
     def get_likes(self, obj):
         return obj.likes.count()
-
-    # def get_image(self, obj):
-    #     if obj.image:
-    #         return obj.image.url
-    #     return None
 
 
 class ExhibitionDetailSerializer(serializers.ModelSerializer):
@@ -41,27 +43,17 @@ class ExhibitionDetailSerializer(serializers.ModelSerializer):
 
     # 읽기 전용 직렬화
     def to_representation(self, instance):
-        # serializer.data
         data = super().to_representation(instance)
         data["recommend"] = self.context["recommend"]
-        pagination = CustomPageNumberPagination()
         # query_params
         select = self.context["select"]
         # select에 따라 field 추가
         if select == "accompanies":
-            accompany = instance.accompanies.all()
-            paginated_accompanies = pagination.paginate_queryset(
-                accompany, self.context["request"]
-            )
-            serializer = AccompanySerializer(paginated_accompanies, many=True)
-            data["accompanies"] = pagination.get_paginated_response(serializer.data)
+            accompany = instance.accompanies.all().order_by("-updated_at")
+            data["accompanies"] = AccompanySerializer(accompany, many=True).data
         else:
-            reviews = instance.exhibition_reviews.all()
-            paginated_reviews = pagination.paginate_queryset(
-                reviews, self.context["request"]
-            )
-            serializer = ReviewSerializer(paginated_reviews, many=True)
-            data["reviews"] = pagination.get_paginated_response(serializer.data)
+            reviews = instance.exhibition_reviews.all().order_by("-updated_at")
+            data["reviews"] = ReviewSerializer(reviews, many=True).data
         return data
 
     class Meta:

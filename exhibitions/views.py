@@ -34,6 +34,7 @@ class ExhibitionView(APIView):
         # 현재 날짜 기준으로 예약 가능한 전시회만 보여주기
         q.add(Q(start_date__lte=today), q.AND)
         q.add(Q(end_date__gte=today), q.AND)
+        q.add(Q(svstatus="접수중"), q.AND)
         exhibitions = Exhibition.objects.filter(q).order_by("end_date")
         # 페이지네이션 class 객체 생성
         pagination = PageNumberPagination()
@@ -49,7 +50,8 @@ class ExhibitionView(APIView):
             if serializer.is_valid():
                 serializer.save(user=request.user)
                 return Response(
-                    {"message": "게시글이 등록되었습니다."}, status=status.HTTP_201_CREATED
+                    {"message": "게시글이 등록되었습니다.", "data": serializer.data},
+                    status=status.HTTP_201_CREATED,
                 )
             else:
                 return Response(
@@ -85,10 +87,18 @@ class ExhibitionDetailView(APIView):
 
     def put(self, request, exhibition_id):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
-        serializer = ExhibitionSerializer(exhibition, data=request.data)
+        serializer = ExhibitionSerializer(
+            exhibition,
+            data=request.data,
+            partial=True,
+            context={"request": request},
+        )
         if serializer.is_valid():
             serializer.save()
-            return Response({"message": "게시글이 수정되었습니다."}, status=status.HTTP_200_OK)
+            return Response(
+                {"message": "게시글이 수정되었습니다.", "data": serializer.data},
+                status=status.HTTP_200_OK,
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, exhibition_id):
@@ -120,32 +130,17 @@ class ExhibitionSearchView(APIView):
         pagination = CustomPageNumberPagination()
         # 키워드가 있는 경우
         if search:
-            # 전시회 내용 or 제목으로 검색
+            # 내용, 제목, 장소 기준으로 검색
             exhibitions = Exhibition.objects.filter(
-                content__icontains=search
-            ) | Exhibition.objects.filter(info_name__icontains=search).order_by(
-                "-created_at"
-            )
-            reviews = Review.objects.filter(content__icontains=search).order_by(
-                "-created_at"
-            )
-            accompanies = Accompany.objects.filter(content__icontains=search).order_by(
-                "-created_at"
-            )
+                Q(content__icontains=search)
+                | Q(info_name__icontains=search)
+                | Q(location__icontains=search)
+            ).order_by("-created_at")
         else:
             exhibitions = Exhibition.objects.all().order_by("-created_at")
-            reviews = Review.objects.all().order_by("-created_at")
-            accompanies = Accompany.objects.all().order_by("-created_at")
         paginated_exhibitions = pagination.paginate_queryset(exhibitions, request)
-        paginated_reviews = pagination.paginate_queryset(reviews, request)
-        paginated_accompanies = pagination.paginate_queryset(accompanies, request)
-        results = (
-            ExhibitionSerializer(paginated_exhibitions, many=True),
-            ReviewSerializer(paginated_reviews, many=True),
-            AccompanySerializer(paginated_accompanies, many=True),
-        )
-        # serializer.data의 리스트를 Response로 보내주기
+        serializer = ExhibitionSerializer(paginated_exhibitions, many=True)
         return Response(
-            [pagination.get_paginated_response(result.data) for result in results],
+            pagination.get_paginated_response(serializer.data),
             status=status.HTTP_200_OK,
         )

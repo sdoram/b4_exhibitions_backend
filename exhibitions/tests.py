@@ -1,10 +1,13 @@
 import tempfile
 from django.urls import reverse
+import requests
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 from users.models import User
 from exhibitions.models import Exhibition
 from PIL import Image
+
+baseurl = "http://127.0.0.1:8000/api"
 
 
 # -----------------------------------이미지 생성 함수----------------------------------
@@ -20,7 +23,11 @@ def get_temporary_image(temp_file):
 class ExhibitionViewTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user_data = {"email": "test@test.com", "nickname": "test", "password": "123"}
+        cls.user_data = {
+            "email": "test@test.com",
+            "nickname": "test",
+            "password": "123",
+        }
         cls.user = User.objects.create_superuser("admin@admin.com", "admin", "123")
         cls.exhibition_data = {
             "info_name": "Test Info_name",
@@ -29,6 +36,7 @@ class ExhibitionViewTest(APITestCase):
             "category": "Test Category",
             "start_date": "2023-01-01",
             "end_date": "2023-02-01",
+            "svstatus": "예약마감",
         }
         cls.user = User.objects.create_superuser(**cls.user_data)
 
@@ -87,7 +95,9 @@ class ExhibitionViewTest(APITestCase):
         Exhibition.objects.all().delete()
         exhibitions = []
         for _ in range(4):
-            exhibitions.append(Exhibition.objects.create(**self.exhibition_data, user=self.user))
+            exhibitions.append(
+                Exhibition.objects.create(**self.exhibition_data, user=self.user)
+            )
         response = self.client.get(path=reverse("exhibitions:exhibition"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 4)
@@ -97,19 +107,23 @@ class ExhibitionViewTest(APITestCase):
 class ExhibitionDetailViewTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user_data = {"email": "test@test.com", "nickname": "test", "password": "123"}
+        cls.user_data = {
+            "email": "test@test.com",
+            "nickname": "test",
+            "password": "123",
+        }
         cls.user = User.objects.create_superuser("admin@admin.com", "admin", "123")
-        cls.exhibition_data = [
-            {"info_name": "test Title1", "content": "test content1"},
-            {"info_name": "test Title2", "content": "test content2"},
-            {"info_name": "test Title3", "content": "test content3"},
-            {"info_name": "test Title4", "content": "test content4"},
-            {"info_name": "test Title5", "content": "test content5"},
-        ]
+
         cls.exhibitions = []
-        for i in range(5):
+        for i in range(1, 6):
+            cls.exhibition_data = {
+                "info_name": f"test Title{i}",
+                "content": f"test content{i}",
+                "location": f"location{i}",
+                "svstatus": "예약마감",
+            }
             cls.exhibitions.append(
-                Exhibition.objects.create(**cls.exhibition_data[i], user=cls.user)
+                Exhibition.objects.create(**cls.exhibition_data, user=cls.user)
             )
 
     def setUp(self):
@@ -120,25 +134,22 @@ class ExhibitionDetailViewTest(APITestCase):
 
     # ------------------------------------전시회 상세페이지를 불러옴--------------------------------
     def test_exhibition_detail(self):
-        response = self.client.get(
-            path=reverse("exhibitions:exhibition-detail", kwargs={"exhibition_id": 2}),
-            HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
-        )
+        response = requests.get(f"{baseurl}/exhibitions/5")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["content"], "test content2")
 
     # ------------------------------------전시회 상세페이지를 수정(관리자만 수정 가능)--------------------------------
     def test_exhibition_detail_update_admin(self):
         if not self.is_admin:
             self.skipTest("Skipped test_exhibition_detail_update_admin")
 
-        data = {"content": "updated test content"}
+        data = {"info_name": "updated test title"}
         response = self.client.put(
-            path=reverse("exhibitions:exhibition-detail", kwargs={"exhibition_id": 2}),
+            path=reverse("exhibitions:exhibition-detail", kwargs={"exhibition_id": 1}),
             data=data,
-            content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {self.access_token}",
         )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["data"]["info_name"], "updated test title")
 
     # ------------------------------------전시회 상세페이지를 삭제(관리자만 삭제 가능)--------------------------------
     def test_exhibition_detail_delete_admin(self):
@@ -158,8 +169,17 @@ class ExhibitionDetailViewTest(APITestCase):
 class ExhibitionLikeViewTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user_data = {"email": "admin@admin.com", "nickname": "admin", "password": "123"}
-        cls.exhibition_data = {"info_name": "test Title", "content": "test content"}
+        cls.user_data = {
+            "email": "admin@admin.com",
+            "nickname": "admin",
+            "password": "123",
+        }
+        cls.exhibition_data = {
+            "info_name": "test Title",
+            "content": "test content",
+            "location": "location",
+            "svstatus": "예약마감",
+        }
         cls.user = User.objects.create_user(**cls.user_data)
         cls.exhibition = Exhibition.objects.create(**cls.exhibition_data, user=cls.user)
 
@@ -170,18 +190,26 @@ class ExhibitionLikeViewTest(APITestCase):
     # ------------------------------------전시회 좋아요--------------------------------
     def test_like_exhibition(self):
         response = self.client.post(
-            reverse("exhibitions:exhibition-like", kwargs={"exhibition_id": self.exhibition.id})
+            reverse(
+                "exhibitions:exhibition-like",
+                kwargs={"exhibition_id": self.exhibition.id},
+            )
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data, {"message": "좋아요"})
+        self.assertEqual(response.data["likes"], 1)
+        self.assertEqual(response.data["message"], "좋아요")
         self.assertIn(self.user, self.exhibition.likes.all())
 
     # ------------------------------------전시회 좋아요 취소--------------------------------
     def test_cancel_like_exhibition(self):
         self.exhibition.likes.add(self.user)
         response = self.client.post(
-            reverse("exhibitions:exhibition-like", kwargs={"exhibition_id": self.exhibition.id})
+            reverse(
+                "exhibitions:exhibition-like",
+                kwargs={"exhibition_id": self.exhibition.id},
+            )
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {"message": "좋아요 취소"})
+        self.assertEqual(response.data["likes"], 0)
+        self.assertEqual(response.data["message"], "좋아요 취소")
         self.assertNotIn(self.user, self.exhibition.likes.all())
