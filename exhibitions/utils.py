@@ -20,9 +20,15 @@ from dotenv import load_dotenv
 def update_exhibition():
     load_dotenv(verbose=True)  # .env 파일로부터 환경변수를 읽어온다.
 
-    SECRET_KEY = os.environ.get("SECRET_KEY")  # 환경변수에서 SECRET_KEY를 가져온다.
-
-    sys.path.append("/Users/banghyunjae/posei/b4_exhibitions_backend")  # 프로젝트 디렉터리를 지정한다.
+    # 프로젝트 디렉터리를 지정하기
+    PJ_DIR = os.environ.get("PJ_DIR")
+    project_root_directory = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "..",
+        "..",
+        PJ_DIR,
+    )
+    sys.path.append(project_root_directory)
 
     os.environ.setdefault(
         "DJANGO_SETTINGS_MODULE", "b4_drf_project.settings"  # 장고 프로젝트의 settings.py 파일을 설정한다.
@@ -32,7 +38,6 @@ def update_exhibition():
 
     from exhibitions.models import Exhibition  # Exhibition 모델 import
 
-    # API 연결 API_KEY 환경변수 처리 해줘야함 일단 임시로 넣어놓음
     UTILS_API_KEY = os.environ.get("UTILS_API_KEY")
     ENDPOINT = (
         f"http://openAPI.seoul.go.kr:8088/{UTILS_API_KEY}/json/ListPublicReservationCulture/1/1000/"
@@ -110,5 +115,3 @@ schedule.every().saturday.at("12:00").do(update_exhibition)  # 매주 토요일 
 while True:
     schedule.run_pending()
     time.sleep(60)  # 1분마다 실행되는 작업을 확인합니다.
-
-# update_exhibition()  # 테스트용
