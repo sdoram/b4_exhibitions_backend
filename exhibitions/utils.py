@@ -62,8 +62,8 @@ def update_exhibition():
         new_data["fields"]["created_at"] = datetime.now().isoformat()
         new_data["fields"]["updated_at"] = datetime.now().isoformat()
         new_data["fields"]["direct_url"] = data["SVCURL"]
-        new_data["fields"]["longitude"] = float(data["X"]) if data["X"] else None
-        new_data["fields"]["latitude"] = float(data["Y"]) if data["Y"] else None
+        new_data["fields"]["longitude"] = float(data["X"]) if data.get("X") else None
+        new_data["fields"]["latitude"] = float(data["Y"]) if data.get("Y") else None
         new_data["fields"]["svstatus"] = data["SVCSTATNM"]
 
         if data["SVCOPNBGNDT"]:
@@ -96,6 +96,7 @@ def update_exhibition():
                 longitude=new_fields["longitude"],
                 direct_url=new_fields["direct_url"],
                 image=new_fields["image"],
+                svstatus=new_fields["svstatus"],
             )
         )
 
@@ -111,10 +112,10 @@ def update_exhibition():
             print("중복된 전시:", new_data["fields"]["info_name"])
 
 
-schedule.every().saturday.at("12:00").do(update_exhibition)  # 매주 토요일 12시에 실행됩니다.
+# schedule.every().saturday.at("12:00").do(update_exhibition)  # 매주 토요일 12시에 실행됩니다.
 
-while True:
-    schedule.run_pending()
-    time.sleep(60)  # 1분마다 실행되는 작업을 확인합니다.
+# while True:
+#     schedule.run_pending()
+#     time.sleep(60)  # 1분마다 실행되는 작업을 확인합니다.
 
-# update_exhibition()  # 테스트용
+update_exhibition()  # 테스트용
