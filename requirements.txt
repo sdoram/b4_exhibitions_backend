@@ -26,3 +26,4 @@ typing_extensions==4.6.3
 tzdata==2023.3
 urllib3==2.0.3
 python-decouple==3.8
+schedule==1.2.0
