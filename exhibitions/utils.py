@@ -87,16 +87,9 @@ def update_exhibition():
         duplicated_exhibition = (
             Exhibition.objects.filter(  # odjects.all() 전체를 가져오면 중복된 데이터를 못 찾아 fllter를 사용
                 info_name=new_fields["info_name"],
-                category=new_fields["category"],
-                location=new_fields["location"],
-                content=new_fields["content"],
                 start_date=new_fields["start_date"],
                 end_date=new_fields["end_date"],
-                latitude=new_fields["latitude"],
-                longitude=new_fields["longitude"],
                 direct_url=new_fields["direct_url"],
-                image=new_fields["image"],
-                svstatus=new_fields["svstatus"],
             )
         )
 
@@ -112,10 +105,10 @@ def update_exhibition():
             print("중복된 전시:", new_data["fields"]["info_name"])
 
 
-# schedule.every().saturday.at("12:00").do(update_exhibition)  # 매주 토요일 12시에 실행됩니다.
+schedule.every().saturday.at("12:00").do(update_exhibition)  # 매주 토요일 12시에 실행됩니다.
 
-# while True:
-#     schedule.run_pending()
-#     time.sleep(60)  # 1분마다 실행되는 작업을 확인합니다.
+while True:
+    schedule.run_pending()
+    time.sleep(60)  # 1분마다 실행되는 작업을 확인합니다.
 
-update_exhibition()  # 테스트용
+# update_exhibition()  # 테스트용
