@@ -4,7 +4,7 @@ from users.models import User
 
 class Exhibition(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    info_name = models.CharField("전시회 이름", max_length=100)
+    info_name = models.CharField("전시회 이름", max_length=255)
     content = models.TextField("전시회 내용", blank=True, null=True)
     location = models.CharField("전시회 장소", blank=True, null=True, max_length=255)
     image = models.ImageField(
