@@ -83,9 +83,10 @@ def update_exhibition():
     new_list = []
 
     # 데이터 파싱하기
-    for data in utils["ListPublicReservationCulture"][
-        "row"
-    ]:  # openAPI 형식에 맞게 필드명들을 가져와야합니다.
+    for idx, data in enumerate(
+        utils["ListPublicReservationCulture"]["row"], 1
+    ):  # openAPI 형식에 맞게 필드명들을 가져와야합니다.
+        print(f"{idx}번 데이터 진행 중")
         new_data = {"model": "exhibitions.exhibition"}
         new_data["fields"] = {}
         new_data["fields"]["user_id"] = 1  # 관리자 user_id = 1
@@ -96,7 +97,7 @@ def update_exhibition():
             current_year = today.year
             # model의 upload_to와 경로를 일치시키기 위해 zfill로 0 채우기
             current_month = str(today.month).zfill(2)
-            directory_path = f"exhibitions/{current_year}/{current_month}"
+            directory_path = f"media/exhibitions/{current_year}/{current_month}"
 
             # 저장할 directory들이 없는 경우 생성
             os.makedirs(directory_path, exist_ok=True)
@@ -106,7 +107,7 @@ def update_exhibition():
             image_file_path = os.path.join(directory_path, image_file_name)
 
             download_image(data["IMGURL"], image_file_path)
-            new_data["fields"]["image"] = image_file_path
+            new_data["fields"]["image"] = image_file_path.split("media/")[1]
         new_data["fields"]["location"] = data["PLACENM"]
         new_data["fields"]["content"] = data["DTLCONT"]
         new_data["fields"]["created_at"] = datetime.now().isoformat()
