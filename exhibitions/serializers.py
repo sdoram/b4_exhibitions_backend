@@ -40,6 +40,8 @@ class ExhibitionDetailSerializer(serializers.ModelSerializer):
     """전시회 상세보기"""
 
     likes = serializers.SerializerMethodField()
+    review_count = serializers.SerializerMethodField()
+    accompany_count = serializers.SerializerMethodField()
 
     # 읽기 전용 직렬화
     def to_representation(self, instance):
@@ -62,3 +64,9 @@ class ExhibitionDetailSerializer(serializers.ModelSerializer):
 
     def get_likes(self, obj):
         return obj.likes.count()
+
+    def get_review_count(self, obj):
+        return obj.exhibition_reviews.count()
+
+    def get_accompany_count(self, obj):
+        return obj.accompanies.count()
