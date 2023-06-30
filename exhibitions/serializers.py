@@ -22,6 +22,8 @@ class ExhibitionSerializer(serializers.ModelSerializer):
             "start_date",
             "end_date",
             "svstatus",
+            "longitude",
+            "latitude",
             "likes",
             "direct_url",
             "content",
