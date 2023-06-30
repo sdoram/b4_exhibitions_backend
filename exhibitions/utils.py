@@ -108,6 +108,8 @@ def update_exhibition():
 
             download_image(data["IMGURL"], image_file_path)
             new_data["fields"]["image"] = image_file_path.split("media/")[1]
+            # 배포 환경에서 부하를 막기위한 sleep
+            time.sleep(1)
         new_data["fields"]["location"] = data["PLACENM"]
         new_data["fields"]["content"] = data["DTLCONT"]
         new_data["fields"]["created_at"] = datetime.now().isoformat()
