@@ -5,11 +5,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from accompanies.models import Accompany, Apply
 from accompanies.serializers import (
-    AccompanySerializer,
     AccompanyCreateSerializer,
     ApplySerializer,
 )
-from exhibitions.models import Exhibition
 
 
 class AccompanyView(APIView):
