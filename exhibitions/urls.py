@@ -17,4 +17,5 @@ urlpatterns = [
         name="exhibition-like",
     ),
     path("weather/", seoulweather.get_weather, name="get_seoul_weather"),
+    path("popular/", views.PopularExhibitionView.as_view(), name="popular_exhibition"),
 ]

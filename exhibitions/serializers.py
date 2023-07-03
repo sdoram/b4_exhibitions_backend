@@ -5,6 +5,17 @@ from reviews.serializers import ReviewSerializer
 from accompanies.serializers import AccompanySerializer
 
 
+class TopFiveExhibitionSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Exhibition
+        fields = ["id", "info_name", "likes"]
+
+    def get_likes(self, obj):
+        return obj.likes.count()
+
+
 class ExhibitionSerializer(serializers.ModelSerializer):
     likes = serializers.SerializerMethodField()
 
