@@ -16,6 +16,7 @@ class Accompany(models.Model):
         related_name="accompanies",
         verbose_name="전시회 정보",
     )
+    picks = models.ManyToManyField(User, related_name="picks", blank=True)
     content = models.TextField("내용")
     personnel = models.PositiveIntegerField("동행 인원")
     start_time = models.DateTimeField("모임 시작시간")

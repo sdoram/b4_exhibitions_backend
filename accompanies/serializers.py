@@ -21,12 +21,10 @@ class ApplySerializer(serializers.ModelSerializer):
         return obj.accompany.id
 
 
-0
-
-
 class AccompanyCreateSerializer(serializers.ModelSerializer):
     nickname = serializers.SerializerMethodField()
     user = serializers.SerializerMethodField()
+    picks_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Accompany
@@ -39,6 +37,7 @@ class AccompanyCreateSerializer(serializers.ModelSerializer):
             "start_time",
             "end_time",
             "updated_at",
+            "picks_count",
         )
 
     read_only_fields = (
@@ -59,10 +58,14 @@ class AccompanyCreateSerializer(serializers.ModelSerializer):
     def get_user(self, obj):
         return obj.user.id
 
+    def get_picks_count(self, obj):
+        return obj.picks.count()
+
 
 class AccompanySerializer(serializers.ModelSerializer):
     applies = serializers.SerializerMethodField()
     nickname = serializers.SerializerMethodField()
+    picks_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Accompany
@@ -74,3 +77,6 @@ class AccompanySerializer(serializers.ModelSerializer):
     def get_applies(self, obj):
         applies = obj.applies.all().order_by("-updated_at")
         return ApplySerializer(applies, many=True).data
+
+    def get_picks_count(self, obj):
+        return obj.picks.count()
