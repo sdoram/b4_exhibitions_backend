@@ -15,22 +15,6 @@ from exhibitions.models import Exhibition
 class AccompanyView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get(self, request, exhibition_id):
-        """전시회별 동행 구하기 댓글리스트 조회하기\n
-        Args:
-            exhibition_id (int): 해당 댓글이 조회될 전시회 게시글의 pk값\n
-        Returns:
-            HTTP_200_OK : 댓글 조회 완료\n
-            HTTP_404_NOT_FOUND : 해당하는 전시회 게시글을 찾을 수 없음\n
-        """
-        exhibition = get_object_or_404(Exhibition, id=exhibition_id)
-        accompanies = exhibition.accompanies.all()
-        serializer = AccompanySerializer(accompanies, many=True)
-        return Response(
-            {"message": "조회를 성공하셨습니다.", "data": serializer.data},
-            status=status.HTTP_200_OK,
-        )
-
     def post(self, request, exhibition_id):
         """동행 구하기 댓글 작성하기\n
         Args:
