@@ -10,7 +10,7 @@ class TopFiveExhibitionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Exhibition
-        fields = ["id", "info_name", "likes"]
+        fields = ["id", "info_name", "likes", "image"]
 
     def get_likes(self, obj):
         return obj.likes.count()
