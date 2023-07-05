@@ -1,3 +1,4 @@
+![헤더](https://github.com/sdoram/b4_exhibitions_backend/assets/125722304/8d39b374-f3c4-41a2-97e4-23bf7cfe239a)
 # Project-Exhibition-Backend - <a href="https://github.com/sdoram/b4_exhibitions_frontend">Frontend 바로가기!</a>
 DRF를 기반으로 Machine Learning 기능을 추가한 각종 전시 및 체험활동 예약 및 추천 커뮤니티 사이트
 <br>
@@ -114,7 +115,7 @@ DRF를 기반으로 Machine Learning 기능을 추가한 각종 전시 및 체�
 #### 추천바
 - 현재 보고 있는 전시와 비슷한 키워드를 가진 5개의 전시를 추천함
 - 클릭 시 해당 전시의 상세페이지로 이동함
-- 제목 부분부터 예약하기 버튼 사이에 추천바가 뜨고 스크롤이 맨 위나 예약하기 버튼 아래에 위치할 땐 추천바가 사라짐
+- 제목 부분부터 예약하기 버튼 사이에 추천바가 뜨고 스크롤이 예약하기 버튼 아래에 위치할 땐 추천바가 사라짐
 - 기능의 존재감을 위해 처음엔 안 보이다가 스크롤을 움직이면 추천바가 보임
 
 #### 이용후기
