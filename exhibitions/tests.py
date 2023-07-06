@@ -6,6 +6,7 @@ from rest_framework.test import APITestCase, APIClient
 from users.models import User
 from exhibitions.models import Exhibition
 from PIL import Image
+from datetime import datetime
 
 baseurl = "http://127.0.0.1:8000/api"
 
@@ -34,9 +35,18 @@ class ExhibitionViewTest(APITestCase):
             "content": "Test Exhibition Content",
             "location": "Test Location",
             "category": "Test Category",
-            "start_date": "2023-01-01",
-            "end_date": "2023-02-01",
-            "svstatus": "예약마감",
+            "start_date": str(datetime.today())[:10],
+            "end_date": str(datetime.today())[:10],
+            "svstatus": "접수중",
+        }
+        cls.exhibition_category_data = {
+            "info_name": "Test Info_name",
+            "content": "Test Exhibition Content",
+            "location": "Test Location",
+            "category": "전시",
+            "start_date": str(datetime.today())[:10],
+            "end_date": str(datetime.today())[:10],
+            "svstatus": "접수중",
         }
         cls.user = User.objects.create_superuser(**cls.user_data)
 
@@ -84,23 +94,32 @@ class ExhibitionViewTest(APITestCase):
         self.assertEqual(Exhibition.objects.get().info_name, "Test Info_name")
         self.assertEqual(bool(Exhibition.objects.get().image), True)
 
-    # ------------------------------------전시회(게시글) 리스트를 불러옴------------------------------------
-    def test_get_exhibition_list(self):
-        response = self.client.get(path=reverse("exhibitions:exhibition"))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 4)
-
     # ------------------------------------전체 전시회(게시글) 리스트를 불러옴--------------------------------
     def test_get_exhibition_list(self):
-        Exhibition.objects.all().delete()
-        exhibitions = []
-        for _ in range(4):
-            exhibitions.append(
-                Exhibition.objects.create(**self.exhibition_data, user=self.user)
-            )
+        exhibitions = [
+            Exhibition.objects.create(**self.exhibition_data, user=self.user)
+            for _ in range(4)
+        ]
         response = self.client.get(path=reverse("exhibitions:exhibition"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 4)
+        self.assertEqual(response.data["count"], 4)
+
+    # ------------------------------------카테고리 적용 전시회(게시글) 리스트를 불러옴--------------------------------
+    def test_get_exhibition_category_list(self):
+        exhibitions = [
+            Exhibition.objects.create(**self.exhibition_data, user=self.user)
+            if i % 2 == 0
+            else Exhibition.objects.create(
+                **self.exhibition_category_data, user=self.user
+            )
+            for i in range(7)
+        ]
+        query_params = "?category=전시"
+        response = self.client.get(
+            path=reverse("exhibitions:exhibition") + query_params
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["count"], 3)
 
 
 # --------------------------------------전시회 상세페이지 테스트----------------------------------
@@ -213,3 +232,36 @@ class ExhibitionLikeViewTest(APITestCase):
         self.assertEqual(response.data["likes"], 0)
         self.assertEqual(response.data["message"], "좋아요 취소")
         self.assertNotIn(self.user, self.exhibition.likes.all())
+
+
+# ------------------------------------전시회 검색 --------------------------------
+class ExhibitionSearchViewTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_superuser("search@test.com", "테스트", "1234")
+        cls.exhibition_search_data = {
+            "info_name": "검색 제목",
+            "content": "검색 내용",
+            "location": "검색 장소",
+            "category": "Test Category",
+            "start_date": str(datetime.today())[:10],
+            "end_date": str(datetime.today())[:10],
+            "svstatus": "접수중",
+        }
+        cls.exhibitions = [
+            Exhibition.objects.create(
+                **cls.exhibition_search_data,
+                user=cls.user,
+            )
+            for _ in range(5)
+        ]
+
+    def test_exhibition_search(self):
+        query_params_list = ["?search=제목", "?search=장소", "?search=내용"]
+
+        for query_params in query_params_list:
+            response = self.client.get(
+                path=reverse("exhibitions:exhibition") + query_params
+            )
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.data["count"], 5)
