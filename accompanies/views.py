@@ -1,22 +1,20 @@
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from accompanies.models import Accompany, Apply
-from accompanies.serializers import (
-    AccompanyCreateSerializer,
-    ApplySerializer,
-)
+from accompanies.serializers import AccompanySerializer, ApplySerializer
 
 
 class AccompanyView(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
     def post(self, request, exhibition_id):  # 동행 구하기 댓글 작성하기
-        serializer = AccompanyCreateSerializer(data=request.data)
+        serializer = AccompanySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save(exhibition_id=exhibition_id, user=request.user)
+        serializer.save(user=request.user, exhibition_id=exhibition_id)
         return Response(
             {"message": "동행 구하기 글이 등록되었습니다.", "data": serializer.data},
             status=status.HTTP_201_CREATED,
@@ -25,9 +23,7 @@ class AccompanyView(APIView):
     def put(self, request, accompany_id):  # 동행 구하기 댓글 수정하기
         accompany = get_object_or_404(Accompany, id=accompany_id)
         if request.user == accompany.user:
-            serializer = AccompanyCreateSerializer(
-                accompany, data=request.data, partial=True
-            )
+            serializer = AccompanySerializer(accompany, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(
@@ -35,10 +31,7 @@ class AccompanyView(APIView):
                 status=status.HTTP_200_OK,
             )
         else:
-            return Response(
-                {"message": "권한이 없습니다."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+            return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
 
     def delete(self, request, accompany_id):  # 동행 구하기 댓글 삭제하기
         accompany = get_object_or_404(Accompany, id=accompany_id)
@@ -74,10 +67,7 @@ class ApplyView(APIView):
                 status=status.HTTP_200_OK,
             )
         else:
-            return Response(
-                {"message": "권한이 없습니다."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+            return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
 
     def delete(self, request, apply_id):  # 동행 신청하기 댓글 삭제하기
         apply = get_object_or_404(Apply, id=apply_id)
@@ -108,10 +98,7 @@ class AccompanyPickView(APIView):  # 동행 채택하기 기능
                     )
                 else:
                     return Response(
-                        {
-                            "message": "목표 인원을 이미 채웠습니다. 인원을 수정하거나 다른 유저와의 동행을 취소하세요.",
-                            "picks_count": accompany.picks.count(),
-                        },
+                        {"message": "목표 인원을 이미 채웠습니다. 인원을 수정하거나 다른 유저와의 동행을 취소하세요."},
                         status=status.HTTP_406_NOT_ACCEPTABLE,
                     )
             else:
