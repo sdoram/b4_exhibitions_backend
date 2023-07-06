@@ -255,13 +255,25 @@ class ExhibitionSearchViewTest(APITestCase):
             )
             for _ in range(5)
         ]
+        cls.exhibition_data = {
+            "info_name": "Test Info_name",
+            "content": "Test Exhibition Content",
+            "location": "Test Location",
+            "category": "Test Category",
+            "start_date": str(datetime.today())[:10],
+            "end_date": str(datetime.today())[:10],
+            "svstatus": "접수중",
+        }
+        cls.exhibitions.append(
+            Exhibition.objects.create(**cls.exhibition_data, user=cls.user)
+        )
 
     def test_exhibition_search(self):
         query_params_list = ["?search=제목", "?search=장소", "?search=내용"]
 
         for query_params in query_params_list:
             response = self.client.get(
-                path=reverse("exhibitions:exhibition") + query_params
+                path=reverse("exhibitions:exhibition-search") + query_params
             )
             self.assertEqual(response.status_code, status.HTTP_200_OK)
             self.assertEqual(response.data["count"], 5)
