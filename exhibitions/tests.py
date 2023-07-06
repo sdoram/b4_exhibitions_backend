@@ -236,3 +236,49 @@ class ExhibitionLikeViewTest(APITestCase):
         self.assertEqual(response.data["likes"], 0)
         self.assertEqual(response.data["message"], "좋아요 취소")
         self.assertNotIn(self.user, self.exhibition.likes.all())
+
+
+# ------------------------------------전시회 검색 --------------------------------
+class ExhibitionSearchViewTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_superuser("search@test.com", "테스트", "1234")
+        cls.exhibition_search_data = {
+            "info_name": "검색 제목",
+            "content": "검색 내용",
+            "location": "검색 장소",
+            "category": "Test Category",
+            "start_date": str(datetime.today())[:10],
+            "end_date": str(datetime.today())[:10],
+            "svstatus": "접수중",
+        }
+        cls.exhibitions = []
+        for _ in range(5):
+            cls.exhibitions.append(
+                Exhibition.objects.create(
+                    **cls.exhibition_search_data,
+                    user=cls.user,
+                )
+            )
+
+    def test_exhibition_search(self):
+        query_params_info_name = "?search=제목"
+        query_params_location = "?search=장소"
+        query_params_content = "?search=내용"
+        
+        response_info_name = self.client.get(
+            path=reverse("exhibitions:exhibition") + query_params_info_name
+        )
+        response_location = self.client.get(
+            path=reverse("exhibitions:exhibition") + query_params_location
+        )
+        response_content = self.client.get(
+            path=reverse("exhibitions:exhibition") + query_params_content
+        )
+
+        self.assertEqual(response_info_name.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_info_name.data["count"], 5)
+        self.assertEqual(response_location.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_location.data["count"], 5)
+        self.assertEqual(response_content.status_code, status.HTTP_200_OK)
+        self.assertEqual(response_content.data["count"], 5)
