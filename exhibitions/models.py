@@ -17,7 +17,7 @@ class Exhibition(models.Model):
     direct_url = models.URLField("바로가기url", max_length=255, blank=True, null=True)
     start_date = models.DateField("시작일", blank=True, null=True)
     end_date = models.DateField("종료일", blank=True, null=True)
-    svstatus = models.CharField("서비스상태", max_length=255)
+    svstatus = models.CharField("서비스상태", max_length=255, blank=True, null=True)
     longitude = models.FloatField("경도", blank=True, null=True)
     latitude = models.FloatField("위도", blank=True, null=True)
 
