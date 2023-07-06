@@ -15,9 +15,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = [
-            "email",
-        ]
+        fields = ["email"]
 
     def clean_password_check(self):  # passworld가 일치하는지 확인하는 것
         password = self.cleaned_data.get("password")
@@ -45,14 +43,15 @@ class UserChangeForm(forms.ModelForm):  # user update할 때 사용하는 form
         return self.initial["password"]
 
 
+@admin.register(User)
 class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ["email", "is_admin", "is_active"]
+    list_display = ["email", "nickname", "is_admin", "is_active"]
     list_filter = ["is_admin"]
     fieldsets = [
-        (None, {"fields": ["email", "password"]}),
+        (None, {"fields": ["email", "nickname"]}),
         ("Permissions", {"fields": ["is_admin", "is_active"]}),
     ]
 
@@ -70,5 +69,4 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = []
 
 
-admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
