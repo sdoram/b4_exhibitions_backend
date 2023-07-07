@@ -16,19 +16,19 @@ DRF를 기반으로 Machine Learning 기능을 추가한 각종 전시 및 체�
 
 ## 🧑‍🤝‍🧑 팀원 구성 및 역할 분담
 - 팀장😄 <a href="https://github.com/sdoram">김세만</a><br>
-[BE] 페이지네이션, 전시 상세 페이지(리뷰, 동행구하기)조회 기능, 검색 기능, 카테고리
+[BE] 페이지네이션, 전시 상세 페이지(리뷰, 동행구하기)조회 기능, 검색 기능, 카테고리   
 [FE] js 연결(메인, 백오피스 메인, 카테고리, 검색, 로그인, 회원가입, 회원정보 조회 및 수정, 회원탈퇴)
 - 팀원😄 <a href="https://github.com/goodminjeong">구민정</a><br> 
-[BE] 동행 구하기/신청하기 CRUD, 동행 채택 기능, 전시 추천 기능, 인기 전시 조회, 구글로그인
+[BE] 동행 구하기/신청하기 CUD, 동행 채택 기능, 전시 추천 기능, 인기 전시 조회, 구글로그인   
 [FE] js 연결(전시 상세페이지, 추천바, 리뷰/동행구하기/신청하기, 동행 채택, 인기 전시, 구글로그인)
 - 팀원😄 <a href="https://github.com/OCmonet">이동현</a><br>
 [BE] 회원가입, 로그인, 유저 정보 조회 및 수정, 회원 탈퇴   
 [FE] 전체 페이지(html) 및 css 담당
 - 팀원😄 <a href="https://github.com/mijinleee">이미진</a><br>
-[BE] 리뷰 CRUD, 배포(EC2, Docker)
-[FE] 배포(S3)
+[BE] 리뷰 CUD, 배포(EC2, Docker)   
+[FE] 배포(Netlify)
 - 팀원😄 <a href="https://github.com/banghyunjae">방현재</a><br>
-[BE] 전시 CRUD, 전시 데이터 API 자동 업데이트, 날씨 API
+[BE] 전시 CRUD, 전시 데이터 API 자동 업데이트, 날씨 API   
 [FE] 날씨 API, 지도 API
 <br>
 <br>
@@ -39,23 +39,23 @@ DRF를 기반으로 Machine Learning 기능을 추가한 각종 전시 및 체�
 - **Framework** : `Django-Rest-Framework 3.14.0`
 - **Database** : `PostgreSQL 15`
 - **Packaging-tool** : `requirements.txt`
-- **FRONTEND** : <a href="https://github.com/sdoram/b4_exhibitions_frontend">b4_exhibitions_frontend</a>
+- **FRONTEND** : <a href="https://github.com/sdoram/b4_exhibitions_frontend">프론트엔드 깃허브 바로가기!</a>
 
 ### <b>🦊 BE 😼</b>
 
-<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"> <img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white"> <img src="https://img.shields.io/badge/postgresql-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"> <img src="https://img.shields.io/badge/dotenv-ECD53F?style=for-the-badge&logo=dotenv&logoColor=white"> <img src="https://img.shields.io/badge/scikitlearn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white"/> <img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white"/>
+<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"> <img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white"> <img src="https://img.shields.io/badge/postgresql-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"> <img src="https://img.shields.io/badge/dotenv-ECD53F?style=for-the-badge&logo=dotenv&logoColor=white"> <img src="https://img.shields.io/badge/scikitlearn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white"/> <img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white"/> <img src="https://img.shields.io/badge/numpy-013243?style=for-the-badge&logo=numpy&logoColor=white"/> <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/> <img src="https://img.shields.io/badge/gunicorn-499848?style=for-the-badge&logo=gunicorn&logoColor=white"> <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white"/> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/>
 <br>
 <br>
 
 ### <b>😈 FE 👽</b>
 
-<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"> <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"> <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
+<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"> <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"> <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> <img src="https://img.shields.io/badge/netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white"/>
 <br>
 <br>
 
 ### <b>🦝ETC🦄</b>
 
-<img src="https://img.shields.io/badge/visualstudiocode-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"/> <img src="https://img.shields.io/badge/gunicorn-499848?style=for-the-badge&logo=gunicorn&logoColor=white"> <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white"/> <img src="https://img.shields.io/badge/amazonec2-FF9900?style=for-the-badge&logo=amazonec2&logoColor=white"/> <img src="https://img.shields.io/badge/amazons3-569A31?style=for-the-badge&logo=amazons3&logoColor=white"/>
+<img src="https://img.shields.io/badge/visualstudiocode-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white"/> <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"> <img src="https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white"> 
 <br>
 <br>
 
@@ -152,7 +152,7 @@ DRF를 기반으로 Machine Learning 기능을 추가한 각종 전시 및 체�
 ***
 💜 [ERD](https://www.erdcloud.com/d/ftoBoJc3WCLvnTqca)
 ------
-ERD를 클릭 시 ERDCloud로 연결됩니다.
+ERD 클릭 시 ERDCloud로 연결됩니다.
 ![image](https://github.com/sdoram/b4_exhibitions_backend/assets/125722304/c20f45f1-3af6-426c-9cf4-26bef0700d6c)
 <br>
 <br>
