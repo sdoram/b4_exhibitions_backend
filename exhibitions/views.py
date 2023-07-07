@@ -1,25 +1,29 @@
-from django.db.models import Count
-from rest_framework.generics import get_object_or_404
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAdminUser, IsAuthenticatedOrReadOnly
-from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
+import datetime
 
-from .models import Exhibition
-from .serializers import (
+from django.db.models import Count
+from django.db.models.query_utils import Q
+
+from rest_framework import status
+from rest_framework.generics import get_object_or_404
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from exhibitions.models import Exhibition
+from exhibitions.recommend_ml import recommendation
+from exhibitions.serializers import (
     ExhibitionSerializer,
     ExhibitionDetailSerializer,
     TopFiveExhibitionSerializer,
 )
 
-from .recommend_ml import recommendation
-from django.db.models.query_utils import Q
-import datetime
-
 
 class ExhibitionView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]  # 인증된 사용자, 인증되지 않은 사용자 모두 읽기 가능
+    def get_permissions(self):  # 권한 설정
+        if self.request.method in ["GET"]:
+            return [AllowAny()]
+        return [IsAdminUser()]
 
     def get(self, request):  # 전시회 목록 불러오기
         q = Q()
@@ -42,29 +46,24 @@ class ExhibitionView(APIView):
         return pagination.get_paginated_response(serializer.data)
 
     def post(self, request):  # 전시회 작성
-        if request.user.is_staff:  # 관리자만 작성 가능
-            serializer = ExhibitionSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save(user=request.user)
-                return Response(
-                    {"message": "게시글이 등록되었습니다.", "data": serializer.data},
-                    status=status.HTTP_201_CREATED,
-                )
-            else:
-                return Response(
-                    {"message": "요청이 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST
-                )
+        serializer = ExhibitionSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(
+                {"message": "게시글이 등록되었습니다.", "data": serializer.data},
+                status=status.HTTP_201_CREATED,
+            )
         else:
             return Response(
-                {"message": "관리자만 글을 작성할 수 있습니다."}, status=status.HTTP_403_FORBIDDEN
+                {"message": "요청이 올바르지 않습니다."}, status=status.HTTP_400_BAD_REQUEST
             )
 
 
 class ExhibitionDetailView(APIView):
-    def get_permissions(self):
-        if self.request.method in ["PUT", "DELETE"]:
-            return [IsAdminUser()]
-        return [IsAuthenticatedOrReadOnly()]
+    def get_permissions(self):  # 권한 설정
+        if self.request.method in ["GET"]:
+            return [AllowAny()]
+        return [IsAdminUser()]
 
     def get(self, request, exhibition_id):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
@@ -105,6 +104,8 @@ class ExhibitionDetailView(APIView):
 
 
 class ExhibitionLikeView(APIView):  # 좋아요 기능
+    permission_classes = [IsAuthenticated]  # 권한 설정
+
     def post(self, request, exhibition_id):
         exhibition = get_object_or_404(Exhibition, id=exhibition_id)
         if request.user not in exhibition.likes.all():
@@ -122,7 +123,7 @@ class ExhibitionLikeView(APIView):  # 좋아요 기능
 
 
 class ExhibitionSearchView(APIView):
-    def get(self, request):
+    def get(self, request):  # 전시 검색 기능
         search = request.query_params.get("search", None)
         pagination = PageNumberPagination()
         # 키워드가 있는 경우
@@ -141,8 +142,6 @@ class ExhibitionSearchView(APIView):
 
 
 class PopularExhibitionView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
     def get(self, request):  # 전시 좋아요 탑5 인기랭킹 조회
         q = Q()
         today = datetime.date.today()
