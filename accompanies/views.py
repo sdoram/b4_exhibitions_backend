@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -9,7 +9,7 @@ from accompanies.serializers import AccompanySerializer, ApplySerializer
 
 
 class AccompanyView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, exhibition_id):  # 동행 구하기 댓글 작성하기
         serializer = AccompanySerializer(data=request.data)
@@ -45,7 +45,7 @@ class AccompanyView(APIView):
 
 
 class ApplyView(APIView):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, accompany_id):  # 동행 신청하기 댓글 작성하기
         serializer = ApplySerializer(data=request.data)
@@ -81,6 +81,8 @@ class ApplyView(APIView):
 
 
 class AccompanyPickView(APIView):  # 동행 채택하기 기능
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, accompany_id, apply_id):
         accompany = get_object_or_404(Accompany, id=accompany_id)
         apply = get_object_or_404(Apply, id=apply_id)
