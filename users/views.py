@@ -1,9 +1,13 @@
-from rest_framework.views import APIView
+import os
+import requests
+
 from rest_framework import status
-from rest_framework import permissions
-from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 from users.models import User
 from users.serializers import (
@@ -11,14 +15,20 @@ from users.serializers import (
     UserSerializer,
     UserMypageSerializer,
 )
-import os
-import requests
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserView(APIView):
-    def post(self, request):
-        """회원 가입을 실행합니다."""
+    def get_permissions(self):
+        if self.request.method in ["POST"]:
+            return [AllowAny()]
+        return [IsAuthenticatedOrReadOnly()]
+
+    def get(self, request, user_id):  # 마이페이지 조회
+        user = get_object_or_404(User, id=user_id)
+        serializer = UserMypageSerializer(user)
+        return Response(serializer.data)
+
+    def post(self, request):  # 회원가입
         password = request.data["password"]
         password_check = request.data["password_check"]
         serializer = UserSerializer(data=request.data)
@@ -35,14 +45,7 @@ class UserView(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class CustomTokenObtainPairView(TokenObtainPairView):  # 토큰 부여하는 코드 = 로그인
-    serializer_class = CustomTokenObtainPairSerializer
-
-
-class UserDetailView(APIView):
-    def patch(self, request):
-        """회원 정보를 수정합니다."""
+    def patch(self, request):  # 회원 정보 수정
         user = request.user
         serializer = UserSerializer(user, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
@@ -53,26 +56,18 @@ class UserDetailView(APIView):
                 {"message": f"${serializer.errors}"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-    def delete(self, request):
-        """회원 계정을 비활성화합니다."""
+    def delete(self, request):  # 회원탈퇴 -> 계정 비활성화
         user = request.user
         user.is_active = False
         user.save()
         return Response({"message": "탈퇴되었습니다."})
 
 
-# 마이페이지
-class UserMypageView(APIView):
-    def get(self, request, user_id):
-        user = get_object_or_404(User, id=user_id)
-        serializer = UserMypageSerializer(user)
-
-        return Response(serializer.data)
+class CustomTokenObtainPairView(TokenObtainPairView):  # 토큰 부여하는 코드 = 로그인
+    serializer_class = CustomTokenObtainPairSerializer
 
 
-class GoogleSignin(APIView):
-    """구글 소셜 로그인"""
-
+class GoogleSignin(APIView):  # 구글 소셜 로그인
     def get(self, request):
         GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY")
         return Response(GOOGLE_API_KEY, status=status.HTTP_200_OK)
@@ -93,8 +88,7 @@ class GoogleSignin(APIView):
         return SocialSiginin(**data)
 
 
-def SocialSiginin(**kwargs):
-    """소셜 로그인, 회원가입"""
+def SocialSiginin(**kwargs):  # 소셜 로그인/회원가입
     # 각각 소셜 로그인에서 유저 정보를 받아오고 None인 값들은 빼줌
     data = {k: v for k, v in kwargs.items() if v is not None}
     email = data.get("email")
