@@ -63,9 +63,10 @@ def recommendation(id, top_n=5):
             by=["end_date"], ascending=True
         )
 
-        # 날짜 필터링 된 데이터프레임의 유사도 내림차순 정렬 후 상위 index 추출
+        # 날짜 필터링 된 데이터프레임의 유사도 내림차순 정렬
         temp = filterd_exhibition_df.sort_values(by=["similarity"], ascending=False)
-
+        # 자기 자신 제거
+        temp = temp[temp.index.values != target_index]
         # svstatus가 접수중인 데이터만 추출
         temp = temp[temp["svstatus"] == "접수중"]
 
