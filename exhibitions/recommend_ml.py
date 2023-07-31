@@ -5,6 +5,13 @@ import datetime
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+data_updated = False
+
+
+def set_data_updated():
+    global data_updated
+    data_updated = True
+
 
 def pre_processing():
     # 데이터베이스 연결
@@ -34,6 +41,10 @@ def pre_processing():
     # 유사도 행렬 생성
     info_name_sim = cosine_similarity(info_name_mat, info_name_mat)
 
+    # 데이터 프레임 작업 후에는 data_updated 변수를 False로 바꿔줌
+    global data_updated
+    data_updated = False
+
     return exhibition_df, info_name_sim
 
 
@@ -45,37 +56,36 @@ def recommendation(id, top_n=5):
     # 전역변수를 참조하도록 지정함
     global exhibition_df
     global info_name_sim
+    global data_updated
 
-    try:
-        # 입력한 정보의 index
-        target = exhibition_df[exhibition_df["id"] == id]
-        target_index = target.index.values
-
-        # 데이터프레임에 입력한 정보의 유사도 추가
-        exhibition_df["similarity"] = info_name_sim[target_index, :].reshape(-1, 1)
-
-        # start_date가 오늘 날짜 이전이거나 오늘이고, end_date가 오늘 날짜거나 오늘 날짜 이후인 데이터만 추출하기
-        today = datetime.date.today()
-        period = (exhibition_df["start_date"] <= today) & (
-            exhibition_df["end_date"] >= today
-        )
-        filterd_exhibition_df = exhibition_df.loc[period].sort_values(
-            by=["end_date"], ascending=True
-        )
-
-        # 날짜 필터링 된 데이터프레임의 유사도 내림차순 정렬
-        temp = filterd_exhibition_df.sort_values(by=["similarity"], ascending=False)
-        # 자기 자신 제거
-        temp = temp[temp.index.values != target_index]
-        # svstatus가 접수중인 데이터만 추출
-        temp = temp[temp["svstatus"] == "접수중"]
-
-        # 데이터프레임 기준 최종 유사도 Top5 index 리스트
-        final_index = temp.index.values[:top_n]
-
-    except ValueError:
+    if data_updated:
         exhibition_df, info_name_sim = pre_processing()
-        return recommendation(id, top_n)
+
+    # 입력한 정보의 index
+    target = exhibition_df[exhibition_df["id"] == id]
+    target_index = target.index.values
+
+    # 데이터프레임에 입력한 정보의 유사도 추가
+    exhibition_df["similarity"] = info_name_sim[target_index, :].reshape(-1, 1)
+
+    # start_date가 오늘 날짜 이전이거나 오늘이고, end_date가 오늘 날짜거나 오늘 날짜 이후인 데이터만 추출하기
+    today = datetime.date.today()
+    period = (exhibition_df["start_date"] <= today) & (
+        exhibition_df["end_date"] >= today
+    )
+    filterd_exhibition_df = exhibition_df.loc[period].sort_values(
+        by=["end_date"], ascending=True
+    )
+
+    # 날짜 필터링 된 데이터프레임의 유사도 내림차순 정렬
+    temp = filterd_exhibition_df.sort_values(by=["similarity"], ascending=False)
+    # 자기 자신 제거
+    temp = temp[temp.index.values != target_index]
+    # svstatus가 접수중인 데이터만 추출
+    temp = temp[temp["svstatus"] == "접수중"]
+
+    # 데이터프레임 기준 최종 유사도 Top5 index 리스트
+    final_index = temp.index.values[:top_n]
 
     # 최종 유사도 Top5의 데이터프레임
     raw_exhibitions = filterd_exhibition_df.loc[final_index]
