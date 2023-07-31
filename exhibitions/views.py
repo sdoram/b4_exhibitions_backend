@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from exhibitions.models import Exhibition
-from exhibitions.recommend_ml import recommendation
+from exhibitions.recommend_ml import recommendation, set_data_updated
 from exhibitions.serializers import (
     ExhibitionSerializer,
     ExhibitionDetailSerializer,
@@ -49,6 +49,7 @@ class ExhibitionView(APIView):
         serializer = ExhibitionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
+            set_data_updated()
             return Response(
                 {"message": "게시글이 등록되었습니다.", "data": serializer.data},
                 status=status.HTTP_201_CREATED,
