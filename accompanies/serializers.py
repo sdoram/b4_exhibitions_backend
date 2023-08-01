@@ -3,7 +3,7 @@ from accompanies.models import Accompany, Apply
 
 
 class ApplySerializer(serializers.ModelSerializer):
-    nickname = serializers.SerializerMethodField()
+    nickname = serializers.StringRelatedField(source="user.nickname")
 
     class Meta:
         model = Apply
@@ -17,14 +17,11 @@ class ApplySerializer(serializers.ModelSerializer):
             "updated_at",
         )
 
-    def get_nickname(self, obj):
-        return obj.user.nickname
-
 
 class AccompanySerializer(serializers.ModelSerializer):
     applies = serializers.SerializerMethodField()
-    nickname = serializers.SerializerMethodField()
     picks_count = serializers.SerializerMethodField()
+    nickname = serializers.StringRelatedField(source="user.nickname")
 
     class Meta:
         model = Accompany
@@ -53,9 +50,6 @@ class AccompanySerializer(serializers.ModelSerializer):
     def get_applies(self, obj):
         applies = obj.applies.all().order_by("-updated_at")
         return ApplySerializer(applies, many=True).data
-
-    def get_nickname(self, obj):
-        return obj.user.nickname
 
     def get_picks_count(self, obj):
         return obj.picks.count()

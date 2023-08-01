@@ -3,7 +3,7 @@ from .models import Review
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    nickname = serializers.SerializerMethodField()
+    nickname = serializers.StringRelatedField(source="user.nickname")
 
     class Meta:
         model = Review
@@ -16,6 +16,3 @@ class ReviewSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-
-    def get_nickname(self, obj):
-        return obj.user.nickname
