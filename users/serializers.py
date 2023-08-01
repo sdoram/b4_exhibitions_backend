@@ -1,3 +1,4 @@
+from datetime import date
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
@@ -5,8 +6,6 @@ from users.models import User
 from rest_framework.generics import get_object_or_404
 from exhibitions.serializers import ExhibitionSerializer
 from exhibitions.models import Exhibition
-from datetime import datetime, date
-from django.db.models import Count
 
 
 class UserSerializer(serializers.ModelSerializer):
